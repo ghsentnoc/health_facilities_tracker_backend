@@ -160,11 +160,12 @@ class BaseReadRepository(BaseRepository[T]):
         if not entity:
             raise EntityDoesNotExistsError(ErrorMessages.entity_does_not_exists(entity_type=self.model, value=value))
 
-        if entity and entity[0].is_deleted:  # type: ignore
-            return True
-
-        if entity and not entity[0].is_deleted:  # type: ignore
-            return False
+        if entity:  # type: ignore
+            if isinstance(entity, list):
+                return all([_entity.is_deleted for _entity in entity])  # type: ignore
+            elif isinstance(entity, type(T)):  # type: ignore
+                return entity.is_deleted  # type: ignore
+        return False
 
     @abstractmethod
     def get_all(
