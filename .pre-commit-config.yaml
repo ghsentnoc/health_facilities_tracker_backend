@@ -1,0 +1,28 @@
+repos:
+  # Ruff (linter & formatter)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.13.1
+    hooks:
+      - id: ruff
+        args: [--fix]     # auto-fix lint issues
+      - id: ruff-format   # enforce formatting
+
+  # Black (formatter)
+  - repo: https://github.com/psf/black
+    rev: 25.9.0
+    hooks:
+      - id: black
+
+  # MyPy (type checker)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.18.2
+    hooks:
+      - id: mypy
+        name: mypy (strict)
+        entry: mypy
+        language: system
+        types: [python]
+        args:
+          - --config-file=pyproject.toml
+          - --show-error-codes
+          - --pretty
