@@ -1,5 +1,5 @@
 project_description = """
-The {app_name} is a dweb platform that helps monitor and analyze healthcare services across facilities. 
+The {app_name} is a web platform that helps monitor and analyze healthcare services across facilities. 
 It tracks facilities offering cervical cancer, breast cancer, maternal, and perinatal care services, 
 providing tools for data collection, auditing, and reporting. 
 The goal is to drive data-informed decisions and improve health outcomes through better visibility and accountability 
