@@ -1,0 +1,1 @@
+sudo docker exec -it health-facilities-tracker-api ./run_alembic_upgrade.sh

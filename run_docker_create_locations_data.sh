@@ -1,0 +1,1 @@
+sudo docker exec -it health-facilities-tracker-api python3 create_locations_data.py
