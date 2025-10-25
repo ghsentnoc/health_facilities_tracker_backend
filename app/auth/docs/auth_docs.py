@@ -1,7 +1,7 @@
 register_user_docs = """
 ### This endpoint is used for register a user.
 
-The following permissions have the authority to get all permissions:
+The following permissions have the authority to register a user:
 
 - `all`
 

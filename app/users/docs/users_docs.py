@@ -62,8 +62,11 @@ The following users have the authority to get all users:
 
 ### Request Body:
 {\n
-    "name": "string",\n
-    "permission_ids": []\n
+    first_name: string,\n
+    last_name: string,\n
+    phone_number: string,\n
+    country: string,\n
+    facility_id: Optional[string]\n
 }
 
 ### Response Body
