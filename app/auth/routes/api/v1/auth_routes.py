@@ -7,9 +7,11 @@ from app.auth.docs.auth_docs import (
     register_user_docs,
     request_password_reset_docs,
     resend_account_verification_link_docs,
+    reset_password_docs,
     verify_account_docs,
+    verify_password_reset_token_docs,
 )
-from app.auth.schemas.request.auth import AccountVerificationTokenSchema, EmailSchema
+from app.auth.schemas.request.auth import EmailSchema, PasswordResetSchema, TokenDataSchema
 from app.auth.services.auth_service import AuthService
 from app.core.schemas.base_entity_response_schema import ResponseSchema
 from app.core.utils.constants import HTTPResponseStatus
@@ -57,14 +59,14 @@ async def register_user(
 def verify_account(
     request: Request,
     auth_service: Annotated[AuthService, Depends(create_auth_service)],
-    verify_token_data: Annotated[AccountVerificationTokenSchema, Body(..., description="Schema for the token data.")],
+    verify_token_data: Annotated[TokenDataSchema, Body(..., description="Schema for the token data.")],
 ) -> ResponseSchema:
     """Method for handling verifying account request.
 
     Args:
         request (Request): The request object.
         auth_service (AuthService): The auth service to use.
-        verify_token_data (AccountVerificationTokenSchema): The token data for verifying the account.
+        verify_token_data (TokenDataSchema): The token data for verifying the account.
 
     Returns:
         ResponseSchema: The response data.
@@ -99,8 +101,7 @@ async def resend_account_verification_link(
     Args:
         request (Request): The request object.
         auth_service (AuthService): The auth service to use.
-        resend_account_verification_request_data (EmailSchema): \
-        The data for needed to resend the account verification link.
+        resend_account_verification_request_data (EmailSchema): The data needed to resend the account verification link.
 
     Returns:
         ResponseSchema: The response data.
@@ -128,16 +129,14 @@ async def resend_account_verification_link(
 async def request_password_reset(
     request: Request,
     auth_service: Annotated[AuthService, Depends(create_auth_service)],
-    request_password_reset_data: Annotated[
-        EmailSchema, Body(..., description="Schema for resend account verification.")
-    ],
+    request_password_reset_data: Annotated[EmailSchema, Body(..., description="Schema for password reset request.")],
 ) -> ResponseSchema:
     """Method for handling resending account verification link request.
 
     Args:
         request (Request): The request object.
         auth_service (AuthService): The auth service to use.
-        request_password_reset_data (EmailSchema): The data for needed to resend the account verification link.
+        request_password_reset_data (EmailSchema): The data needed to resend the account verification link.
 
     Returns:
         ResponseSchema: The response data.
@@ -149,6 +148,72 @@ async def request_password_reset(
         status_code=status.HTTP_201_CREATED,
         message=request_password_reset_response,  # type: ignore
         data={},  # type: ignore
+        request=request,
+    )
+
+    return response_data
+
+
+@auth_router.post(
+    path="/verify-password-reset-token",
+    status_code=status.HTTP_200_OK,
+    description=verify_password_reset_token_docs,
+)
+def verify_password_reset_token(
+    request: Request,
+    auth_service: Annotated[AuthService, Depends(create_auth_service)],
+    password_reset_token: Annotated[TokenDataSchema, Body(..., description="Schema for password reset token.")],
+) -> ResponseSchema:
+    """Method for handling verifying password reset token request.
+
+    Args:
+        request (Request): The request object.
+        auth_service (AuthService): The auth service to use.
+        password_reset_token (TokenDataSchema): The token data to verify.
+
+    Returns:
+        ResponseSchema: The response data.
+    """
+    verify_password_reset_token_response = auth_service.verify_password_reset_token(token_data=password_reset_token)
+
+    response_data = ResponseSchema(
+        status=HTTPResponseStatus.SUCCESS.value,
+        status_code=status.HTTP_201_CREATED,
+        message=SuccessMessages.PASSWORD_RESET_TOKEN_VERIFIED.value,  # type: ignore
+        data=verify_password_reset_token_response,  # type: ignore
+        request=request,
+    )
+
+    return response_data
+
+
+@auth_router.post(
+    path="/reset-password",
+    status_code=status.HTTP_200_OK,
+    description=reset_password_docs,
+)
+def reset_password(
+    request: Request,
+    auth_service: Annotated[AuthService, Depends(create_auth_service)],
+    password_reset_data: Annotated[PasswordResetSchema, Body(..., description="Schema for password reset.")],
+) -> ResponseSchema:
+    """Method for handling reset password request.
+
+    Args:
+        request (Request): The request object.
+        auth_service (AuthService): The auth service to use.
+        password_reset_data (PasswordResetSchema): The password reset data.
+
+    Returns:
+        ResponseSchema: The response data.
+    """
+    reset_password_response = auth_service.reset_password(password_reset_data=password_reset_data)
+
+    response_data = ResponseSchema(
+        status=HTTPResponseStatus.SUCCESS.value,
+        status_code=status.HTTP_201_CREATED,
+        message=SuccessMessages.PASSWORD_RESET.value,  # type: ignore
+        data=reset_password_response,  # type: ignore
         request=request,
     )
 

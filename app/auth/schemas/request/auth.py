@@ -5,7 +5,7 @@ from app.core.utils.messages import ErrorMessages
 from app.core.utils.validators import is_valid_email, is_valid_password
 
 
-class AccountVerificationTokenSchema(BaseModel):
+class TokenDataSchema(BaseModel):
     """Schema for account verification token."""
 
     token: str
@@ -53,7 +53,7 @@ class AccountVerificationResponseSchema(EmailSchema):
     is_verified: bool
 
 
-class ResetPasswordSchema(EmailSchema):
+class PasswordResetSchema(EmailSchema):
     """Schema for when resetting a password."""
 
     password: str

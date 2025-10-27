@@ -76,7 +76,7 @@ The following permissions have the authority to resend the account verification 
 request_password_reset_docs = """
 ### This endpoint is used for requesting a password reset.
 
-The following permissions have the authority to resend the account verification link.:
+The following permissions have the authority to request a password reset.:
 
 - `all`
 
@@ -89,6 +89,52 @@ The following permissions have the authority to resend the account verification 
 ### Request Body:
 {\n
     email: string\n
+}
+
+### Response Body
+- General response schema
+"""
+
+verify_password_reset_token_docs = """
+### This endpoint is used for verifying a password reset token.
+
+The following permissions have the authority to verify a password reset token.:
+
+- `all`
+
+### Path Parameters:
+- None
+
+### Query Parameters:
+- None
+
+### Request Body:
+{\n
+    token: string\n
+}
+
+### Response Body
+- General response schema
+"""
+
+reset_password_docs = """
+### This endpoint is used for resetting a password.
+
+The following permissions have the authority to reset password.:
+
+- `all`
+
+### Path Parameters:
+- None
+
+### Query Parameters:
+- None
+
+### Request Body:
+{\n
+    email: string,\n
+    password: string,\n
+    token: string\n
 }
 
 ### Response Body

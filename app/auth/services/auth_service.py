@@ -10,11 +10,13 @@ from app.auth.models import Role
 from app.auth.schemas.mail_body import AccountVerificationTemplateBodySchema, ResetPasswordTemplateBodySchema
 from app.auth.schemas.request.auth import (
     AccountVerificationResponseSchema,
-    AccountVerificationTokenSchema,
     AlreadyVerifiedErrorDataSchema,
     EmailSchema,
+    PasswordResetSchema,
+    TokenDataSchema,
 )
 from app.auth.services.token_service import TokenService
+from app.auth.utils.constants import TokenTypeConstants
 from app.auth.utils.hash_password import PasswordHashManager
 from app.core.base_service import BaseService
 from app.core.config.project_config import project_config
@@ -103,6 +105,7 @@ class AuthService(BaseService[User]):
         verification_token = self.token_service.create_token(
             payload={"sub": user.id, "iss": ApplicationConstants.APP_NAME.value},
             expires_in_minutes=auth_config.VERIFICATION_LINK_EXPIRES_IN_MINUTES,
+            token_type=TokenTypeConstants.ACCOUNT_VERIFICATION_TOKEN.value,
         )
 
         # create verification link
@@ -134,11 +137,11 @@ class AuthService(BaseService[User]):
 
         return user
 
-    def verify_account(self, *, token_data: AccountVerificationTokenSchema) -> AccountVerificationResponseSchema:
+    def verify_account(self, *, token_data: TokenDataSchema) -> AccountVerificationResponseSchema:
         """Verify a user's account by verifying their token.
 
         Args:
-            token_data (AccountVerificationTokenSchema): The token data to verify.
+            token_data (TokenDataSchema): The token data to verify.
 
         Returns:
             AccountVerificationResponseSchema: The response after verification is successful.
@@ -154,6 +157,10 @@ class AuthService(BaseService[User]):
             ) from e
         except ExpiredTokenError as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
+        # check if the token is an account verification token
+        if decoded_token.get("token_type") != TokenTypeConstants.ACCOUNT_VERIFICATION_TOKEN.value:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessages.INVALID_TOKEN.value)
 
         # check if the user exists
         if not self.user_service.check_if_exists_and_not_deleted(
@@ -233,6 +240,7 @@ class AuthService(BaseService[User]):
         verification_token = self.token_service.create_token(
             payload={"sub": user.id, "iss": ApplicationConstants.APP_NAME.value},  # type: ignore
             expires_in_minutes=auth_config.VERIFICATION_LINK_EXPIRES_IN_MINUTES,
+            token_type=TokenTypeConstants.ACCOUNT_VERIFICATION_TOKEN.value,
         )
 
         # create verification link
@@ -294,13 +302,16 @@ class AuthService(BaseService[User]):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessages.NOT_VERIFIED.value)
 
         # Generate a reset verification token
-        reset_verification_token = self.token_service.create_token(
+        password_reset_verification_token = self.token_service.create_token(
             payload={"sub": user.id, "iss": ApplicationConstants.APP_NAME.value},  # type: ignore
             expires_in_minutes=auth_config.RESET_PASSWORD_TOKEN_EXPIRES_IN_MINUTES,
+            token_type=TokenTypeConstants.PASSWORD_RESET_TOKEN.value,
         )
 
         # create verification link
-        verification_link = f"{project_config.FRONTEND_URL}/auth/reset-password?token={reset_verification_token}"
+        verification_link = (
+            f"{project_config.FRONTEND_URL}/auth/reset-password?token={password_reset_verification_token}"
+        )
 
         # Send the reset code to the user's email
         mail_body = ResetPasswordTemplateBodySchema(
@@ -326,6 +337,68 @@ class AuthService(BaseService[User]):
             await self.mail_service.send_mail()
 
         return SuccessMessages.RESET_PASSWORD_EMAIL_SENT.value
+
+    def verify_password_reset_token(self, token_data: TokenDataSchema) -> dict:
+        """Verify the password reset token
+
+        Args:
+            token_data (TokenDataSchema): The password reset token data
+
+        Returns:
+            str: The verification response
+        """
+        # decode the token
+        # raise error if token is invalid or expired
+        try:
+            decoded_token = self.token_service.decode_token(token=token_data.token)
+        except InvalidTokenError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e),
+            ) from e
+        except ExpiredTokenError as e:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
+        if decoded_token.get("token_type") != TokenTypeConstants.PASSWORD_RESET_TOKEN.value:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessages.INVALID_TOKEN.value)
+
+        # get the user to verify
+        user = self.user_service.get_by_id(entity_id=decoded_token["sub"])  # type: ignore
+
+        return {"email": user.email, "id": user.id}  # type: ignore
+
+    def reset_password(self, password_reset_data: PasswordResetSchema) -> str:
+        """Reset the user's password
+
+        Args:
+            password_reset_data (ResetPassword): The password reset data
+
+        Returns:
+            str: The password reset response
+        """
+        # verify password reset token
+        verification_response = self.verify_password_reset_token(
+            token_data=TokenDataSchema(token=password_reset_data.token)
+        )
+
+        # get the user to verify
+        user = self.user_service.get_by_id(entity_id=verification_response.get("id"))  # type: ignore
+
+        if user.email != str(password_reset_data.email).strip().lower():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessages.INVALID_EMAIL.value)
+
+        # set user password to new password
+        user.password = self.password_hash_manager.hash_password(password=password_reset_data.password)
+
+        # invalidate all token versions
+        user.token_version += 1  # type: ignore
+
+        try:
+            self.user_repository.save(object_to_save=user)
+        except FailedToSaveObjectException as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e
+
+        return SuccessMessages.PASSWORD_RESET.value
 
     # def change_user_role(self, *, user_id: str, role_data: UpdateUserRoleSchema) -> User:
     #     """Change a user's role."""

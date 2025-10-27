@@ -151,6 +151,8 @@ class ErrorMessages(Enum):
 class SuccessMessages(Enum):
     """Constants for success messages."""
 
+    PASSWORD_RESET_TOKEN_VERIFIED = "Password reset token verified successfully."
+    PASSWORD_RESET = "Password reset successful."
     RESET_PASSWORD_EMAIL_SENT = "Reset password verification email sent successfully."
     VERIFICATION_EMAIL_SENT = "Account verification email sent successfully."
     VERIFIED = "The account has been verified successfully."
