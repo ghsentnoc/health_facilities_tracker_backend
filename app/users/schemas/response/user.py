@@ -23,6 +23,7 @@ class ReadUserSchema(BaseReadSchema):
     last_login: Optional[datetime]
     is_verified: bool
     is_suspended: bool
+    is_approved: bool
 
     @field_validator("phone_number")
     @classmethod

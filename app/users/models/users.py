@@ -19,6 +19,7 @@ class User(Base, IdentityMixin, AuditCreateMixin, AuditUpdateMixin, SoftDeleteMi
     last_login = Column(DateTime, nullable=True)
     is_verified = Column(Boolean, default=False)
     is_suspended = Column(Boolean, default=False)
+    is_approved = Column(Boolean, default=False)
 
     profile = relationship("UserProfile", back_populates="user", uselist=False)
     roles = relationship("Role", secondary="user_roles", back_populates="users")
@@ -39,6 +40,7 @@ class User(Base, IdentityMixin, AuditCreateMixin, AuditUpdateMixin, SoftDeleteMi
             "last_login": self.last_login if self.last_login else None,
             "is_verified": self.is_verified,
             "is_suspended": self.is_suspended,
+            "is_approved": self.is_approved,
             "is_deleted": self.is_deleted,
             "deleted_at": self.deleted_at if self.deleted_at else None,
             "created_at": self.created_at,

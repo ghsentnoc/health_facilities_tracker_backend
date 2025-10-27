@@ -430,6 +430,12 @@ class AuthService(BaseService[User]):
         if not user.is_verified:  # type: ignore
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessages.NOT_VERIFIED.value)
 
+        if not user.is_approved:  # type: ignore
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=ErrorMessages.entity_not_approved(object_type=User, value=user.email),  # type: ignore
+            )
+
         if not self.password_hash_manager.verify_password(
             plain_password=user_credentials.password,
             hashed_password=user.password_hash,  # type: ignore

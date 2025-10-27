@@ -32,6 +32,7 @@ class UserProfile(Base, IdentityMixin, AuditCreateMixin, AuditUpdateMixin, SoftD
             "email": self.user.email,
             "is_verified": self.user.is_verified,
             "is_suspended": self.user.is_suspended,
+            "is_approved": self.user.is_approved,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "phone_number": self.phone_number,
