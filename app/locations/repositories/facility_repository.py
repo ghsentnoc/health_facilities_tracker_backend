@@ -2,9 +2,9 @@ from typing import Any, Optional, Type, Union
 
 from sqlalchemy.orm import Session, joinedload
 
-from app.core.base_repository import BaseReadRepository, BaseWriteRepository
-from app.locations.models import District, Facility, Region, SubDistrict
-from app.locations.schemas.request.facility import CreateFacilitySchema
+from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.schemas.query_params_schemas import JoinedSortSchema
+from app.locations.models import District, Facility, Region
 
 
 class FacilityRepository(BaseReadRepository[Facility], BaseWriteRepository[Facility]):
@@ -21,16 +21,16 @@ class FacilityRepository(BaseReadRepository[Facility], BaseWriteRepository[Facil
         self.model = model
         super().__init__(db_session=db_session, model=model)
 
-    def create(self, *, data: CreateFacilitySchema) -> Facility:
+    def create(self, *, data: dict) -> Facility:
         """The method to create a new facility entity.
 
         Args:
-            data (CreateFacilitySchema): The facility data needed to create the entity.
+            data (dict): The facility data needed to create the entity.
 
         Returns:
             Facility: The newly created facility.
         """
-        return self._default_create(data=data.model_dump())
+        return self._default_create(data=data)
 
     def get_all(
         self,
@@ -53,23 +53,30 @@ class FacilityRepository(BaseReadRepository[Facility], BaseWriteRepository[Facil
         Returns:
             list[Facility]: A list of all entity instances.
         """
+        joined_sort = []
+
         query = self.db_session.query(Facility)
-        query = query.options(
-            joinedload(Facility.sub_district).joinedload(SubDistrict.district).joinedload(District.region)
-        )
+        query = query.options(joinedload(Facility.district).joinedload(District.region))
 
         if filters:
+            if filters.get("region_name") or filters.get("region_id"):
+                query = query.join(Facility.district).join(District.region)
+
             if filters.get("region_name"):
-                query = query.join(SubDistrict).join(District).join(Region)
                 filters["region_name"].update({"field_name": "name", "model": Region})
 
+            if filters.get("region_id"):
+                filters["region_id"].update({"field_name": "id", "model": Region})
+
             if filters.get("district_name"):
-                query = query.join(SubDistrict).join(District)
+                query = query.join(Facility.district)
                 filters["district_name"].update({"field_name": "name", "model": District})
 
-            if filters.get("sub_district_name"):
-                query = query.join(SubDistrict)
-                filters["sub_district_name"].update({"field_name": "name", "model": SubDistrict})
+        if sort.get("region_name"):  # type: ignore
+            joined_sort.append(JoinedSortSchema(field="name", model="region", direction=sort.get("region_name")))  # type: ignore
+
+        if sort.get("district_name"):  # type: ignore
+            joined_sort.append(JoinedSortSchema(field="name", model="district", direction=sort.get("district_name")))  # type: ignore
 
         return self._default_get_all(
             filters_without_joins=filters_without_joins,
@@ -79,3 +86,35 @@ class FacilityRepository(BaseReadRepository[Facility], BaseWriteRepository[Facil
             sort=sort,
             query=query,
         )
+
+    def approve_facility(self, *, facility_id: str) -> Facility | None:
+        """Approve a facility.
+
+        Args:
+            facility_id (str): The id of the facility to approve.
+
+        Returns:
+            Facility: The approved facility.
+        """
+        facility = self.get_by_id(entity_id=facility_id)
+
+        if facility:
+            facility.is_approved = True  # type: ignore
+            return self.save(object_to_save=facility)
+        return facility
+
+    def license_facility(self, *, facility_id: str) -> Facility | None:
+        """License a facility.
+
+        Args:
+            facility_id (str): The id of the facility to license.
+
+        Returns:
+            Facility: The licensed facility.
+        """
+        facility = self.get_by_id(entity_id=facility_id)
+
+        if facility:
+            facility.is_licensed = True  # type: ignore
+            return self.save(object_to_save=facility)
+        return facility

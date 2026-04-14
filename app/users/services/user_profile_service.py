@@ -2,8 +2,8 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 
-from app.core.base_service import BaseService
 from app.core.custom_exceptions import ObjectAlreadyExistsException
+from app.core.services.base_service import BaseService
 from app.users.models import UserProfile
 from app.users.repositories.user_profile_repository import UserProfileRepository
 from app.users.schemas.request.user_profile import (
@@ -54,17 +54,18 @@ class UserProfileService(BaseService[UserProfile]):
             unique_field_value=user_profile_data.user_id,
         )
 
-    def update(self, *, user_profile: UserProfile, data_to_update: UpdateUserProfileSchema) -> UserProfile:
+    def update(self, *, user_id: str, data_to_update: UpdateUserProfileSchema) -> UserProfile:
         """Update a user profile.
 
         Args:
-            user_profile (UserProfile): The user profile to update.
+            user_id (str): The user to update their profile.
             data_to_update (UpdateUserProfileSchema): The data to update the user profile with.
 
         Returns:
             UserProfile: The updated user profile.
         """
         try:
-            return self.user_profile_repository.update(entity=user_profile, update_data=data_to_update.model_dump())
+            user_profile = self.get_by_field(field_name="user_id", value=user_id)
+            return self.user_profile_repository.update(entity=user_profile, update_data=data_to_update.model_dump())  # type: ignore
         except ObjectAlreadyExistsException as e:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e)) from e

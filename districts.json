@@ -1,0 +1,1046 @@
+[
+  {
+    "region": "Ahafo",
+    "name": "Asunafo North"
+  },
+  {
+    "region": "Ahafo",
+    "name": "Asunafo South"
+  },
+  {
+    "region": "Ahafo",
+    "name": "Asutifi North"
+  },
+  {
+    "region": "Ahafo",
+    "name": "Asutifi South"
+  },
+  {
+    "region": "Ahafo",
+    "name": "Tano North"
+  },
+  {
+    "region": "Ahafo",
+    "name": "Tano South"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Adansi Akrofuom"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Adansi Asokwa"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Adansi North"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Adansi South"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Afigya Kwabre North"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Afigya Kwabre South"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Ahafo Ano North"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Ahafo Ano South East"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Ahafo Ano South West"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Amansie Central"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Amansie South"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Amansie West"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Asante Akim Central"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Asante Akim North"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Asante Akim South"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Asante Mampong"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Asokore Mampong"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Asokwa"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Atwima Kwanwoma"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Atwima Mponua"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Atwima Nwabiagya"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Atwima Nwabiagya North"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Bekwai"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Bosome Freho"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Bosomtwe"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Ejisu"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Ejura-Sekyedumase"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Juaben"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Kumasi"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Kwabre East"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Kwadaso"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Obuasi"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Obuasi East"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Offinso"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Offinso North"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Oforikrom"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Old Tafo"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Sekyere Afram Plains"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Sekyere Central"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Sekyere East"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Sekyere Kumawu"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Sekyere South"
+  },
+  {
+    "region": "Ashanti",
+    "name": "Suame"
+  },
+  {
+    "region": "Bono",
+    "name": "Banda"
+  },
+  {
+    "region": "Bono",
+    "name": "Berekum"
+  },
+  {
+    "region": "Bono",
+    "name": "Berekum West"
+  },
+  {
+    "region": "Bono",
+    "name": "Dormaa East"
+  },
+  {
+    "region": "Bono",
+    "name": "Dormaa Municipal"
+  },
+  {
+    "region": "Bono",
+    "name": "Dormaa West"
+  },
+  {
+    "region": "Bono",
+    "name": "Jaman North"
+  },
+  {
+    "region": "Bono",
+    "name": "Jaman South"
+  },
+  {
+    "region": "Bono",
+    "name": "Sunyani Municipal"
+  },
+  {
+    "region": "Bono",
+    "name": "Sunyani West"
+  },
+  {
+    "region": "Bono",
+    "name": "Tain"
+  },
+  {
+    "region": "Bono",
+    "name": "Wenchi"
+  },
+  {
+    "region": "Bono East",
+    "name": "Atebubu-Amanten"
+  },
+  {
+    "region": "Bono East",
+    "name": "Kintampo North"
+  },
+  {
+    "region": "Bono East",
+    "name": "Kintampo South"
+  },
+  {
+    "region": "Bono East",
+    "name": "Nkoranza North"
+  },
+  {
+    "region": "Bono East",
+    "name": "Nkoranza South"
+  },
+  {
+    "region": "Bono East",
+    "name": "Pru"
+  },
+  {
+    "region": "Bono East",
+    "name": "Pru West"
+  },
+  {
+    "region": "Bono East",
+    "name": "Sene East"
+  },
+  {
+    "region": "Bono East",
+    "name": "Sene West"
+  },
+  {
+    "region": "Bono East",
+    "name": "Techiman Municipal"
+  },
+  {
+    "region": "Bono East",
+    "name": "Techiman North"
+  },
+  {
+    "region": "Central",
+    "name": "Abura-Asebu-Kwamankese"
+  },
+  {
+    "region": "Central",
+    "name": "Agona East"
+  },
+  {
+    "region": "Central",
+    "name": "Agona West"
+  },
+  {
+    "region": "Central",
+    "name": "Ajumako-Enyan-Essiam"
+  },
+  {
+    "region": "Central",
+    "name": "Asikuma-Odoben-Brakwa"
+  },
+  {
+    "region": "Central",
+    "name": "Assin Foso"
+  },
+  {
+    "region": "Central",
+    "name": "Assin North"
+  },
+  {
+    "region": "Central",
+    "name": "Assin South"
+  },
+  {
+    "region": "Central",
+    "name": "Awutu Senya"
+  },
+  {
+    "region": "Central",
+    "name": "Awutu Senya East"
+  },
+  {
+    "region": "Central",
+    "name": "Cape Coast"
+  },
+  {
+    "region": "Central",
+    "name": "Efutu"
+  },
+  {
+    "region": "Central",
+    "name": "Ekumfi"
+  },
+  {
+    "region": "Central",
+    "name": "Gomoa Central"
+  },
+  {
+    "region": "Central",
+    "name": "Gomoa East"
+  },
+  {
+    "region": "Central",
+    "name": "Gomoa West"
+  },
+  {
+    "region": "Central",
+    "name": "Komenda-Edna-Eguafo-Abirem"
+  },
+  {
+    "region": "Central",
+    "name": "Mfantseman"
+  },
+  {
+    "region": "Central",
+    "name": "Twifo Ati Morkwa"
+  },
+  {
+    "region": "Central",
+    "name": "Twifo-Hemang Lower Denkyira"
+  },
+  {
+    "region": "Central",
+    "name": "Upper Denkyira East"
+  },
+  {
+    "region": "Central",
+    "name": "Upper Denkyira West"
+  },
+  {
+    "region": "Eastern",
+    "name": "Abuakwa North"
+  },
+  {
+    "region": "Eastern",
+    "name": "Abuakwa South"
+  },
+  {
+    "region": "Eastern",
+    "name": "Achiase"
+  },
+  {
+    "region": "Eastern",
+    "name": "Akwapim North"
+  },
+  {
+    "region": "Eastern",
+    "name": "Akwapim South"
+  },
+  {
+    "region": "Eastern",
+    "name": "Akyemansa"
+  },
+  {
+    "region": "Eastern",
+    "name": "Asene Manso Akroso"
+  },
+  {
+    "region": "Eastern",
+    "name": "Asuogyaman"
+  },
+  {
+    "region": "Eastern",
+    "name": "Atiwa East"
+  },
+  {
+    "region": "Eastern",
+    "name": "Atiwa West"
+  },
+  {
+    "region": "Eastern",
+    "name": "Ayensuano"
+  },
+  {
+    "region": "Eastern",
+    "name": "Birim Central"
+  },
+  {
+    "region": "Eastern",
+    "name": "Birim North"
+  },
+  {
+    "region": "Eastern",
+    "name": "Birim South"
+  },
+  {
+    "region": "Eastern",
+    "name": "Denkyembour"
+  },
+  {
+    "region": "Eastern",
+    "name": "Fanteakwa North"
+  },
+  {
+    "region": "Eastern",
+    "name": "Fanteakwa South"
+  },
+  {
+    "region": "Eastern",
+    "name": "Kwaebibirem"
+  },
+  {
+    "region": "Eastern",
+    "name": "Kwahu Afram Plains North"
+  },
+  {
+    "region": "Eastern",
+    "name": "Kwahu Afram Plains South"
+  },
+  {
+    "region": "Eastern",
+    "name": "Kwahu East"
+  },
+  {
+    "region": "Eastern",
+    "name": "Kwahu South"
+  },
+  {
+    "region": "Eastern",
+    "name": "Kwahu West"
+  },
+  {
+    "region": "Eastern",
+    "name": "Lower Manya-Krobo"
+  },
+  {
+    "region": "Eastern",
+    "name": "New Juaben North"
+  },
+  {
+    "region": "Eastern",
+    "name": "New Juaben South"
+  },
+  {
+    "region": "Eastern",
+    "name": "Nsawam-Adoagyiri"
+  },
+  {
+    "region": "Eastern",
+    "name": "Okere"
+  },
+  {
+    "region": "Eastern",
+    "name": "Suhum"
+  },
+  {
+    "region": "Eastern",
+    "name": "Upper Manya-Krobo"
+  },
+  {
+    "region": "Eastern",
+    "name": "Upper West Akim"
+  },
+  {
+    "region": "Eastern",
+    "name": "West Akim"
+  },
+  {
+    "region": "Eastern",
+    "name": "Yilo-Krobo"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ablekuma Central"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ablekuma North"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ablekuma West"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Accra Metro"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ada East"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ada West"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Adentan"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ashaiman"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ayawaso Central"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ayawaso East"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ayawaso North"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ayawaso West"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ga Central"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ga East"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ga North"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ga South"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ga West"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Korle-Klottey"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Kpone-Katamanso"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Krowor"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "La-Dade-Kotopon"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "La-Nkwantanang-Madina"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ledzokuku"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Ningo Prampram"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Okai Koi North"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Shai-Osudoku"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Tema"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Tema West"
+  },
+  {
+    "region": "Greater Accra",
+    "name": "Weija-Gbawe"
+  },
+  {
+    "region": "North East",
+    "name": "Bunkpurugu -Nakpanduri"
+  },
+  {
+    "region": "North East",
+    "name": "Chereponi"
+  },
+  {
+    "region": "North East",
+    "name": "East Mamprusi"
+  },
+  {
+    "region": "North East",
+    "name": "Mamprugu-Moagduri"
+  },
+  {
+    "region": "North East",
+    "name": "West Mamprusi"
+  },
+  {
+    "region": "North East",
+    "name": "Yunyoo-Nasuan"
+  },
+  {
+    "region": "Northern",
+    "name": "Gushiegu"
+  },
+  {
+    "region": "Northern",
+    "name": "Karaga"
+  },
+  {
+    "region": "Northern",
+    "name": "Kpandai"
+  },
+  {
+    "region": "Northern",
+    "name": "Kumbungu"
+  },
+  {
+    "region": "Northern",
+    "name": "Mion"
+  },
+  {
+    "region": "Northern",
+    "name": "Nanton"
+  },
+  {
+    "region": "Northern",
+    "name": "Nanumba North"
+  },
+  {
+    "region": "Northern",
+    "name": "Nanumba South"
+  },
+  {
+    "region": "Northern",
+    "name": "Saboba"
+  },
+  {
+    "region": "Northern",
+    "name": "Sagnarigu"
+  },
+  {
+    "region": "Northern",
+    "name": "Savelugu"
+  },
+  {
+    "region": "Northern",
+    "name": "Tamale"
+  },
+  {
+    "region": "Northern",
+    "name": "Tatale-Sangule"
+  },
+  {
+    "region": "Northern",
+    "name": "Tolon"
+  },
+  {
+    "region": "Northern",
+    "name": "Yendi"
+  },
+  {
+    "region": "Northern",
+    "name": "Zabzugu"
+  },
+  {
+    "region": "Oti",
+    "name": "Biakoye"
+  },
+  {
+    "region": "Oti",
+    "name": "Guan"
+  },
+  {
+    "region": "Oti",
+    "name": "Jasikan"
+  },
+  {
+    "region": "Oti",
+    "name": "Kadjebi"
+  },
+  {
+    "region": "Oti",
+    "name": "Krachi East"
+  },
+  {
+    "region": "Oti",
+    "name": "Krachi Nchumuru"
+  },
+  {
+    "region": "Oti",
+    "name": "Krachi West"
+  },
+  {
+    "region": "Oti",
+    "name": "Nkwanta North"
+  },
+  {
+    "region": "Oti",
+    "name": "Nkwanta South"
+  },
+  {
+    "region": "Savannah",
+    "name": "Bole"
+  },
+  {
+    "region": "Savannah",
+    "name": "Central Gonja"
+  },
+  {
+    "region": "Savannah",
+    "name": "East Gonja"
+  },
+  {
+    "region": "Savannah",
+    "name": "North Gonja"
+  },
+  {
+    "region": "Savannah",
+    "name": "North-East Gonja"
+  },
+  {
+    "region": "Savannah",
+    "name": "Sawla-Tuna-Kalba"
+  },
+  {
+    "region": "Savannah",
+    "name": "West Gonja"
+  },
+  {
+    "region": "Upper East",
+    "name": "Bawku Municipal"
+  },
+  {
+    "region": "Upper East",
+    "name": "Bawku West"
+  },
+  {
+    "region": "Upper East",
+    "name": "Binduri"
+  },
+  {
+    "region": "Upper East",
+    "name": "Bolgatanga East"
+  },
+  {
+    "region": "Upper East",
+    "name": "Bolgatanga Municipal"
+  },
+  {
+    "region": "Upper East",
+    "name": "Bongo"
+  },
+  {
+    "region": "Upper East",
+    "name": "Builsa North"
+  },
+  {
+    "region": "Upper East",
+    "name": "Builsa South"
+  },
+  {
+    "region": "Upper East",
+    "name": "Garu"
+  },
+  {
+    "region": "Upper East",
+    "name": "Kasena-Nankana"
+  },
+  {
+    "region": "Upper East",
+    "name": "Kasena-Nankana West"
+  },
+  {
+    "region": "Upper East",
+    "name": "Nabdam"
+  },
+  {
+    "region": "Upper East",
+    "name": "Pusiga"
+  },
+  {
+    "region": "Upper East",
+    "name": "Talensi"
+  },
+  {
+    "region": "Upper East",
+    "name": "Tempane"
+  },
+  {
+    "region": "Upper West",
+    "name": "Daffiama-Bussie-Issa"
+  },
+  {
+    "region": "Upper West",
+    "name": "Jirapa"
+  },
+  {
+    "region": "Upper West",
+    "name": "Lambussie"
+  },
+  {
+    "region": "Upper West",
+    "name": "Lawra"
+  },
+  {
+    "region": "Upper West",
+    "name": "Nadowli-Kaleo"
+  },
+  {
+    "region": "Upper West",
+    "name": "Nandom"
+  },
+  {
+    "region": "Upper West",
+    "name": "Sissala East"
+  },
+  {
+    "region": "Upper West",
+    "name": "Sissala West"
+  },
+  {
+    "region": "Upper West",
+    "name": "Wa East"
+  },
+  {
+    "region": "Upper West",
+    "name": "Wa Municipal"
+  },
+  {
+    "region": "Upper West",
+    "name": "Wa West"
+  },
+  {
+    "region": "Volta",
+    "name": "Adaklu"
+  },
+  {
+    "region": "Volta",
+    "name": "Afadjato South"
+  },
+  {
+    "region": "Volta",
+    "name": "Agortime-Ziope"
+  },
+  {
+    "region": "Volta",
+    "name": "Akatsi North"
+  },
+  {
+    "region": "Volta",
+    "name": "Akatsi South"
+  },
+  {
+    "region": "Volta",
+    "name": "Anloga"
+  },
+  {
+    "region": "Volta",
+    "name": "Central Tongu"
+  },
+  {
+    "region": "Volta",
+    "name": "Ho"
+  },
+  {
+    "region": "Volta",
+    "name": "Ho West"
+  },
+  {
+    "region": "Volta",
+    "name": "Hohoe"
+  },
+  {
+    "region": "Volta",
+    "name": "Keta"
+  },
+  {
+    "region": "Volta",
+    "name": "Ketu North"
+  },
+  {
+    "region": "Volta",
+    "name": "Ketu South"
+  },
+  {
+    "region": "Volta",
+    "name": "Kpando"
+  },
+  {
+    "region": "Volta",
+    "name": "North Dayi"
+  },
+  {
+    "region": "Volta",
+    "name": "North Tongu"
+  },
+  {
+    "region": "Volta",
+    "name": "South Dayi"
+  },
+  {
+    "region": "Volta",
+    "name": "South Tongu"
+  },
+  {
+    "region": "Western",
+    "name": "Ahanta West"
+  },
+  {
+    "region": "Western",
+    "name": "Effia-Kwesimintsim"
+  },
+  {
+    "region": "Western",
+    "name": "Ellembelle"
+  },
+  {
+    "region": "Western",
+    "name": "Jomoro"
+  },
+  {
+    "region": "Western",
+    "name": "Mpohor"
+  },
+  {
+    "region": "Western",
+    "name": "Nzema East"
+  },
+  {
+    "region": "Western",
+    "name": "Prestea-Huni Valley"
+  },
+  {
+    "region": "Western",
+    "name": "Sekondi-Takoradi"
+  },
+  {
+    "region": "Western",
+    "name": "Shama"
+  },
+  {
+    "region": "Western",
+    "name": "Tarkwa-Nsuaem"
+  },
+  {
+    "region": "Western",
+    "name": "Wassa Amenfi Central"
+  },
+  {
+    "region": "Western",
+    "name": "Wassa Amenfi East"
+  },
+  {
+    "region": "Western",
+    "name": "Wassa Amenfi West"
+  },
+  {
+    "region": "Western",
+    "name": "Wassa East"
+  },
+  {
+    "region": "Western North",
+    "name": "Aowin"
+  },
+  {
+    "region": "Western North",
+    "name": "Bia East"
+  },
+  {
+    "region": "Western North",
+    "name": "Bia West"
+  },
+  {
+    "region": "Western North",
+    "name": "Bibiani-Anhwiaso-Bekwai"
+  },
+  {
+    "region": "Western North",
+    "name": "Bodi"
+  },
+  {
+    "region": "Western North",
+    "name": "Juaboso"
+  },
+  {
+    "region": "Western North",
+    "name": "Sefwi-Akontombra"
+  },
+  {
+    "region": "Western North",
+    "name": "Sefwi-Wiawso"
+  },
+  {
+    "region": "Western North",
+    "name": "Suaman"
+  }
+]

@@ -3,10 +3,9 @@ from typing import Any, Optional, Type, Union
 from sqlalchemy.orm import Session, joinedload
 
 from app.auth.models import Role
-from app.core.base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
 from app.locations.models import Facility
 from app.users.models import User, UserProfile
-from app.users.schemas.request.user import CreateUserSchema
 
 
 class UserRepository(BaseReadRepository[User], BaseWriteRepository[User]):
@@ -23,20 +22,16 @@ class UserRepository(BaseReadRepository[User], BaseWriteRepository[User]):
         self.model = model
         super().__init__(db_session=db_session, model=model)
 
-    def create(self, data: CreateUserSchema) -> User:  # type: ignore
+    def create(self, data: dict) -> User:  # type: ignore
         """Create a new User entity.
 
         Args:
-            data (CreateUserSchema): The data needed to create the user
+            data (dict): The data needed to create the user
 
         Returns:
             User: The created user.
         """
-        roles = self.db_session.query(Role).filter(Role.id.in_(data.role_ids)).all()
-
-        new_user_schema = {"email": data.email, "password_hash": data.password_hash, "roles": roles}
-
-        return self._default_create(data=new_user_schema)
+        return self._default_create(data=data)
 
     def get_all(
         self,
@@ -60,7 +55,7 @@ class UserRepository(BaseReadRepository[User], BaseWriteRepository[User]):
             list[User]: A list of all entity instances.
         """
         query = self.db_session.query(User)
-        query = query.options(joinedload(User.profile).joinedload(UserProfile.facility)).options(joinedload(User.roles))
+        query = query.options(joinedload(User.profile), joinedload(User.roles), joinedload(User.user_facility))
 
         if filters:
             if filters.get("first_name") or filters.get("phone_number") or filters.get("country"):
@@ -76,7 +71,7 @@ class UserRepository(BaseReadRepository[User], BaseWriteRepository[User]):
                 filters["country"].update({"field_name": "country", "model": UserProfile})
 
             if filters.get("facility_name"):
-                query = query.join(UserProfile.facility)
+                query = query.join(User.user_facility)
                 filters["facility_name"].update({"field_name": "name", "model": Facility})
 
             if filters.get("role"):
@@ -91,6 +86,23 @@ class UserRepository(BaseReadRepository[User], BaseWriteRepository[User]):
             sort=sort,
             query=query,
         )
+
+    def approve_user(self, *, user_id: str) -> User | None:
+        """Approve a user.
+
+        Args:
+            user_id (str): The ID of the user to approve.
+
+        Returns:
+            User: The approved user.
+        """
+        user = self.get_by_id(entity_id=user_id)
+
+        if user:
+            user.is_approved = True  # type: ignore
+            return self.save(object_to_save=user)
+
+        return user
 
     def update(self, *, entity: User, update_data: dict) -> User:
         """Update a user."""

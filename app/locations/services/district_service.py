@@ -2,8 +2,8 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 
-from app.core.base_service import BaseService
 from app.core.custom_exceptions import ObjectAlreadyExistsException
+from app.core.services.base_service import BaseService
 from app.locations.models import District, Region
 from app.locations.repositories.district_repository import DistrictRepository
 from app.locations.schemas.request.district import CreateDistrictSchema, UpdateDistrictSchema
@@ -83,8 +83,8 @@ class DistrictService(BaseService[District]):
         _ = self.region_service.get_by_id(entity_id=data_to_update.region_id)
 
         try:
-            updated_role = self.district_repository.update(entity=district, update_data=data_to_update.model_dump())
+            updated_district = self.district_repository.update(entity=district, update_data=data_to_update.model_dump())
         except ObjectAlreadyExistsException as e:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e)) from e
 
-        return updated_role
+        return updated_district

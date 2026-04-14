@@ -2,6 +2,7 @@ from enum import Enum
 from pathlib import Path
 
 from app.core.docs.main import project_description
+from app.locations.models import District, Facility, Region
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
@@ -44,3 +45,6 @@ class HTTPResponseStatus(Enum):
 
     SUCCESS = "success"
     ERROR = "error"
+
+
+MODEL_MAP = {"district": District, "facility": Facility, "region": Region}

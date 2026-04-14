@@ -2,8 +2,8 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 
-from app.core.base_service import BaseService
 from app.core.custom_exceptions import ObjectAlreadyExistsException
+from app.core.services.base_service import BaseService
 from app.locations.models import Region
 from app.locations.repositories.region_repository import RegionRepository
 from app.locations.schemas.request.region import CreateRegionSchema, UpdateRegionSchema
@@ -75,8 +75,8 @@ class RegionService(BaseService[Region]):
         region = self.get_by_id(entity_id=region_id)
 
         try:
-            updated_role = self.region_repository.update(entity=region, update_data=data_to_update.model_dump())
+            updated_region = self.region_repository.update(entity=region, update_data=data_to_update.model_dump())
         except ObjectAlreadyExistsException as e:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e)) from e
 
-        return updated_role
+        return updated_region

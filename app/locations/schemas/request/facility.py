@@ -9,12 +9,13 @@ class BaseFacilitySchema(BaseModel):
     """Base schema for facility request and response."""
 
     name: str
-    sub_district_id: str
     facility_type: str
     ownership: str
+    ghana_post_address: Optional[str] = None
     longitude: Optional[float] = None
     latitude: Optional[float] = None
     altitude: Optional[float] = None
+    registration_number: Optional[str] = None
 
     @field_validator("facility_type")
     @classmethod
@@ -27,8 +28,10 @@ class BaseFacilitySchema(BaseModel):
         Returns:
             str: The validated facility type.
         """
-        if FacilityType.__contains__(value.lower()):
-            return value.lower()
+        normalized_value = value.strip().lower()
+        allowed_values = {facility_type.value.lower() for facility_type in FacilityType}
+        if normalized_value in allowed_values:
+            return normalized_value
         raise ValueError("Invalid facility type.")
 
     @field_validator("ownership")
@@ -42,11 +45,27 @@ class BaseFacilitySchema(BaseModel):
         Returns:
             str: The validated facility ownership.
         """
-        if FacilityOwnership.__contains__(value.lower()):
-            return value.lower()
+        normalized_value = value.strip().lower()
+        allowed_values = {ownership.value.lower() for ownership in FacilityOwnership}
+        if normalized_value in allowed_values:
+            return normalized_value
         raise ValueError("Invalid facility ownership.")
 
 
-CreateFacilitySchema = BaseFacilitySchema
+class BaseCreateFacilitySchema(BaseFacilitySchema):
+    """Base schema for creating a new facility."""
 
-UpdateFacilitySchema = CreateFacilitySchema
+    district_id: str
+
+
+class CreateFacilityRequestSchema(BaseCreateFacilitySchema):
+    """Schema for creating a new facility."""
+
+    contact_numbers: Optional[list[str]] = None
+
+
+CreateFacilitySchema = BaseCreateFacilitySchema
+
+UpdateFacilityRequestSchema = CreateFacilityRequestSchema
+
+UpdateFacilitySchema = BaseCreateFacilitySchema

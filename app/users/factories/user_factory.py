@@ -1,7 +1,13 @@
 from sqlalchemy.orm import Session
 
+from app.auth.config.auth_config import auth_config
+from app.auth.dependencies.role_service_dependency import create_role_service
+from app.auth.services.token_service import TokenService
+from app.auth.utils.hash_password import PasswordHashManager
 from app.core.factories.base_repository_factory import BaseRepositoryFactory
+from app.core.services.mail_service import MailServiceBuilder
 from app.locations.dependencies.facility_service_dependency import create_facility_service
+from app.users.dependencies.user_facility_association_service_dependency import create_user_facility_association_service
 from app.users.dependencies.user_profile_service_dependency import create_user_profile_service
 from app.users.models import User
 from app.users.repositories.user_repository import UserRepository
@@ -38,9 +44,21 @@ class UserServiceFactory:
             UserService: The created user service.
         """
         facility_service = create_facility_service(db_session=user_repository.db_session)
+        role_service = create_role_service(db_session=user_repository.db_session)
         user_profile_service = create_user_profile_service(db_session=user_repository.db_session)
+        user_facility_association_service = create_user_facility_association_service(
+            db_session=user_repository.db_session
+        )
+        password_hash_manager = PasswordHashManager()
+        mail_service = MailServiceBuilder()
+        token_service = TokenService(secret=auth_config.JWT_SECRET_KEY, algorithm=auth_config.JWT_ALGORITHM)
         return UserService(
             user_repository=user_repository,
             user_profile_service=user_profile_service,
             facility_service=facility_service,
+            role_service=role_service,
+            password_hash_manager=password_hash_manager,
+            mail_service=mail_service,
+            token_service=token_service,
+            user_facility_association_service=user_facility_association_service,
         )

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.auth.models import Permission, Role
 from app.auth.schemas.request.role import CreateRoleSchema
-from app.core.base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
 
 
 class RoleRepository(BaseReadRepository[Role], BaseWriteRepository[Role]):

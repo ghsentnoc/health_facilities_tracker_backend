@@ -7,6 +7,18 @@ T = TypeVar("T")
 class ErrorMessages(Enum):
     """Constants for error messages."""
 
+    FACILITY_REPRESENTATIVE_LIMIT_EXCEEDED = "A facility can only have 4 representatives."
+    INVALID_OAUTH_STATE = "Invalid OAuth state parameter."
+    INVALID_URL = "The URL provided is not valid."
+    INVALID_DOMAIN_ASSOCIATION = "The domain id provided is not associated with the user's domain."
+    UNAUTHENTICATED_APP = "Application is not authenticated."
+    UNAUTHORIZED_APP = "Application (Key) is not authorized."
+    ALREADY_ACTIVATED = "Application is already activated."
+    ALREADY_DEACTIVATED = "Application is already deactivated."
+    INACTIVE_APPLICATION = "Application is not active."
+    ACCOUNT_SUSPENDED = "This account has been suspended."
+    NO_PASSWORD = "This account was created without a password. Please set one to continue."
+    PASSWORD_ALREADY_SET = "Account already set up."
     INVALID_CREDENTIALS = "The credentials provided are not valid."
     NOT_VERIFIED = "This account is not verified."
     ALREADY_VERIFIED = "This account has already been verified."
@@ -22,6 +34,8 @@ class ErrorMessages(Enum):
     )
     INVALID_ID = "The id provided is not of the right format."
     INVALID_PAGINATION_VALUES = "Pagination values must be positive integers."
+    UNAUTHORIZED_USER = "User is not authorized."
+    UNAUTHENTICATED_USER = "user is not authenticated."
 
     @classmethod
     def already_exists(cls, *, object_type: Type[T]) -> str:
@@ -34,6 +48,32 @@ class ErrorMessages(Enum):
             str: The message
         """
         return f"{object_type.__name__} already exists."
+
+    @classmethod
+    def already_licensed(cls, *, object_type: Type[T], value: str) -> str:
+        """Function to create already licensed error messages.
+
+        Args:
+            object_type (Type[T]): The type of object.
+            value (str): The value that has already been licensed.
+
+        Returns:
+            str: The message
+        """
+        return f"{object_type.__name__} {value} has already been licensed."
+
+    @classmethod
+    def entity_exists_but_deleted(cls, *, entity_type: Type[T], value: str) -> str:
+        """Function to create entity exists but deleted error messages.
+
+        Args:
+            entity_type (Type[T]): The type of entity.
+            value (str): The value of the entity that exists but is deleted.
+
+        Returns:
+            str: The message
+        """
+        return f"{entity_type.__name__} '{value}' already exists but is deleted."
 
     @classmethod
     def already_approved(cls, *, object_type: Type[T], value: str) -> str:
@@ -67,7 +107,7 @@ class ErrorMessages(Enum):
 
         Args:
               entity_type (str): The entity type.
-              value (str): The value that do not exist.
+              value (str): The value that does not exist.
 
         Returns:
              str: The message
@@ -80,7 +120,7 @@ class ErrorMessages(Enum):
 
         Args:
               entity_type (str): The entity type.
-              value (str): The value that do not exist.
+              value (str): The value that does not exist.
 
         Returns:
              str: The message
@@ -148,13 +188,49 @@ class ErrorMessages(Enum):
         """
         return f"Invalid JSON format for '{query_param}'. Please send valid JSON."
 
+    @classmethod
+    def required_field(cls, *, field_name: str) -> str:
+        """Function to create required field error message.
+
+        Args:
+            field_name (str): The name of the field.
+
+        Returns:
+            str: The message
+        """
+        return f"{field_name} is a required field."
+
+    @classmethod
+    def cannot_update_profile(cls) -> str:
+        """Function to create cannot update profile error message.
+
+        Returns:
+            str: The message.
+        """
+        return (
+            "You are not assigned any health professional role. You cannot update this profile. "
+            "Please contact your administrator to have your role updated."
+        )
+
 
 class SuccessMessages(Enum):
     """Constants for success messages."""
 
+    AUTHORIZATION_URL_GENERATED = "Authorization URL generated successfully."
+    ROLE_SWITCHED_SUCCESSFULLY = "Role switched successfully."
+    ACCOUNT_SUSPENDED_SUCCESSFULLY = "Account suspended successfully."
+    ACCOUNT_REACTIVATED_SUCCESSFULLY = "Account reactivated successfully."
+    TOKENS_REVOKED_SUCCESSFULLY = "Tokens revoked successfully."
+    API_KEYS_REVOKED_SUCCESSFULLY = "Api keys revoked successfully."
+    API_KEY_ROTATED_SUCCESSFULLY = "Api key rotated successfully."
+    APPLICATION_DEACTIVATED = "Application deactivated successfully."
+    APPLICATION_ACTIVATED = "Application activated successfully."
     AUTHENTICATED = "Authenticated successfully."
+    LOGOUT = "Logged out successfully."
     PASSWORD_RESET_TOKEN_VERIFIED = "Password reset token verified successfully."
     PASSWORD_RESET = "Password reset successful."
+    PASSWORD_SET_SUCCESSFULLY = "Password has been set successfully. Proceed to login."
+    PASSWORD_CHANGED_SUCCESSFULLY = "Password has been changed successfully."
     RESET_PASSWORD_EMAIL_SENT = "Reset password verification email sent successfully."
     VERIFICATION_EMAIL_SENT = "Account verification email sent successfully."
     VERIFIED = "The account has been verified successfully."
@@ -236,3 +312,16 @@ class SuccessMessages(Enum):
             str: The message
         """
         return f"{object_type.__name__} {value} approved successfully."
+
+    @classmethod
+    def licensed_successfully(cls, *, object_type: Type[T], value: str) -> str:
+        """Function to create license successfully message.
+
+        Args:
+            object_type (Type[T]): The type of object.
+            value (str): The value licensed successfully.
+
+        Returns:
+            str: The message
+        """
+        return f"{object_type.__name__} {value} licensed successfully."

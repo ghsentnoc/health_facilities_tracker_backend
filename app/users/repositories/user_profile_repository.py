@@ -2,9 +2,8 @@ from typing import Any, Optional, Type, Union
 
 from sqlalchemy.orm import Session
 
-from app.core.base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
 from app.users.models import UserProfile
-from app.users.schemas.request.user_profile import CreateUserProfileSchema
 
 
 class UserProfileRepository(BaseReadRepository[UserProfile], BaseWriteRepository[UserProfile]):
@@ -21,16 +20,16 @@ class UserProfileRepository(BaseReadRepository[UserProfile], BaseWriteRepository
         self.model = model
         super().__init__(db_session=db_session, model=model)
 
-    def create(self, data: CreateUserProfileSchema) -> UserProfile:  # type: ignore
+    def create(self, data: dict) -> UserProfile:  # type: ignore
         """Create a new UserProfile entity.
 
         Args:
-            data (CreateUserProfileSchema): The data needed to create the user profile.
+            data (dict): The data needed to create the user profile.
 
         Returns:
             UserProfile: The created user profile.
         """
-        return self._default_create(data=data.model_dump())
+        return self._default_create(data=data)
 
     def get_all(
         self,

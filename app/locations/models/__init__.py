@@ -1,6 +1,5 @@
 from .districts import District
-from .facilities import Facility
+from .facilities import Facility, FacilityContact
 from .regions import Region
-from .sub_districts import SubDistrict
 
-__all__ = ["Region", "District", "SubDistrict", "Facility"]
+__all__ = ["Region", "District", "Facility", "FacilityContact"]

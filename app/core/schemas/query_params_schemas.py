@@ -108,3 +108,26 @@ class PaginationSchema(BaseModel):
         if str(value).isdigit() and int(value) >= 1:
             return int(value)
         return 1
+
+
+class JoinedSortSchema(BaseModel):
+    """The schema for joined sorts."""
+
+    field: str
+    model: str
+    direction: str
+
+    @field_validator("direction", mode="before")
+    @classmethod
+    def validate_mode(cls, value: str) -> str:
+        """Validate and convert mode to lowercase.
+
+        Args:
+            value (list[str]): The mode value to validate and convert.
+
+        Returns:
+            str: The validated and converted mode.
+        """
+        if value is not None and value.strip().lower() in ["asc", "desc"]:
+            return value.strip().lower()
+        return "asc"

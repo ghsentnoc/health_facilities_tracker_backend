@@ -2,9 +2,9 @@ from typing import Any, Optional, Type, Union
 
 from sqlalchemy.orm import Session, joinedload
 
-from app.core.base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.schemas.query_params_schemas import JoinedSortSchema
 from app.locations.models import District, Region
-from app.locations.schemas.request.district import CreateDistrictSchema
 
 
 class DistrictRepository(BaseReadRepository[District], BaseWriteRepository[District]):
@@ -21,16 +21,16 @@ class DistrictRepository(BaseReadRepository[District], BaseWriteRepository[Distr
         self.model = model
         super().__init__(db_session=db_session, model=model)
 
-    def create(self, *, data: CreateDistrictSchema) -> District:
+    def create(self, *, data: dict) -> District:
         """The method to create a new district entity.
 
         Args:
-            data (CreateDistrictSchema): The district data needed to create the entity.
+            data (dict): The district data needed to create the entity.
 
         Returns:
             District: The newly created district.
         """
-        return self._default_create(data=data.model_dump())
+        return self._default_create(data=data)
 
     def get_all(
         self,
@@ -53,12 +53,19 @@ class DistrictRepository(BaseReadRepository[District], BaseWriteRepository[Distr
         Returns:
             list[District]: A list of all entity instances.
         """
+        joined_sort = []
+
         query = self.db_session.query(District)
         query = query.options(joinedload(District.region))
 
         if filters and filters.get("region_name"):
-            query = query.join(Region)
+            query = query.join(District.region)
             filters["region_name"].update({"field_name": "name", "model": Region})
+
+        if sort.get("region_name"):  # type: ignore
+            joined_sort.append(
+                JoinedSortSchema(field="name", model="region", direction=sort.get("region_name"))  # type: ignore
+            )
 
         return self._default_get_all(
             filters_without_joins=filters_without_joins,

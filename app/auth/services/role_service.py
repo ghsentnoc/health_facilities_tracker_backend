@@ -6,8 +6,8 @@ from app.auth.models import Role
 from app.auth.repositories.role_repository import RoleRepository
 from app.auth.schemas.request.role import CreateRoleSchema, UpdateRoleSchema
 from app.auth.utils.allowed_filters_sort import allowed_role_filters, allowed_role_sorts, role_filters_without_joins
-from app.core.base_service import BaseService
 from app.core.custom_exceptions import ObjectAlreadyExistsException
+from app.core.services.base_service import BaseService
 
 
 class RoleService(BaseService[Role]):

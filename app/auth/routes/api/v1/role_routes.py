@@ -2,6 +2,7 @@ from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, Path, Query, Request, status
 
+from app.auth.dependencies.auth_dependency import validate_api_key
 from app.auth.dependencies.role_service_dependency import create_role_service
 from app.auth.docs.roles_docs import (
     create_role_docs,
@@ -19,7 +20,7 @@ from app.core.schemas.base_entity_response_schema import ResponseSchema
 from app.core.utils.constants import HTTPResponseStatus
 from app.core.utils.messages import SuccessMessages
 
-role_router = APIRouter(prefix="/roles", tags=["Role"])
+role_router = APIRouter(prefix="/roles", tags=["Role"], dependencies=[Depends(validate_api_key)])
 
 
 @role_router.post(path="", status_code=status.HTTP_201_CREATED, description=create_role_docs)

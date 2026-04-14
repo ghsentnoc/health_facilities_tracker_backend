@@ -2,9 +2,8 @@ from typing import Any, Optional, Type, Union
 
 from sqlalchemy.orm import Session
 
-from app.core.base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
 from app.locations.models import Region
-from app.locations.schemas.request.region import CreateRegionSchema
 
 
 class RegionRepository(BaseReadRepository[Region], BaseWriteRepository[Region]):
@@ -21,16 +20,16 @@ class RegionRepository(BaseReadRepository[Region], BaseWriteRepository[Region]):
         self.model = model
         super().__init__(db_session=db_session, model=model)
 
-    def create(self, *, data: CreateRegionSchema) -> Region:
+    def create(self, *, data: dict) -> Region:
         """The method to create a new region entity.
 
         Args:
-            data (CreateRegionSchema): The region data needed to create the entity.
+            data (dict): The region data needed to create the entity.
 
         Returns:
             Region: The newly created region.
         """
-        return self._default_create(data=data.model_dump())
+        return self._default_create(data=data)
 
     def get_all(
         self,

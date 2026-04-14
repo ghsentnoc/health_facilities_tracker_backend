@@ -8,7 +8,7 @@ from app.auth.utils.allowed_filters_sort import (
     allowed_permission_sorts,
     permission_filters_without_joins,
 )
-from app.core.base_service import BaseService
+from app.core.services.base_service import BaseService
 
 
 class PermissionService(BaseService[Permission]):

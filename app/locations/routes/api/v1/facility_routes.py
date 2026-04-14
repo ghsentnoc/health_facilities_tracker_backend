@@ -2,6 +2,7 @@ from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, Path, Query, Request, status
 
+from app.auth.dependencies.auth_dependency import validate_api_key
 from app.core.schemas.base_entity_response_schema import ResponseSchema
 from app.core.utils.constants import HTTPResponseStatus
 from app.core.utils.messages import SuccessMessages
@@ -15,24 +16,24 @@ from app.locations.docs.facilities_docs import (
     update_facility_docs,
 )
 from app.locations.models import Facility
-from app.locations.schemas.request.facility import CreateFacilitySchema, UpdateFacilitySchema
+from app.locations.schemas.request.facility import CreateFacilityRequestSchema, UpdateFacilityRequestSchema
 from app.locations.schemas.response.facility import ReadFacilitySchema
 from app.locations.services.facility_service import FacilityService
 
-facility_router = APIRouter(prefix="/facilities", tags=["Facilities"])
+facility_router = APIRouter(prefix="/facilities", tags=["Facilities"], dependencies=[Depends(validate_api_key)])
 
 
 @facility_router.post(path="", status_code=status.HTTP_201_CREATED, description=create_facility_docs)
 def create_facility(
     request: Request,
-    facility_data: CreateFacilitySchema,
+    facility_data: CreateFacilityRequestSchema,
     facility_service: Annotated[FacilityService, Depends(create_facility_service)],
 ) -> ResponseSchema:
     """Method for handling creating a new facility.
 
     Args:
         request (Request): The request object.
-        facility_data (CreateFacilitySchema): The data needed to create the facility.
+        facility_data (CreateFacilityRequestSchema): The data needed to create the facility.
         facility_service (FacilityService): The facility service to use.
 
     Returns:
@@ -76,11 +77,16 @@ def get_all_facilities(
     extras.update({"pagination": facility_service.get_pagination_extras(request=request)})
     extras["pagination"].update({"total_retrieved": len(facilities)})
 
+    response_facilities = [
+        facility if isinstance(facility, dict) else ReadFacilitySchema(**facility.to_dict())  # type: ignore
+        for facility in facilities
+    ]
+
     response_data = ResponseSchema(
         status=HTTPResponseStatus.SUCCESS.value,
         status_code=status.HTTP_200_OK,
         message=SuccessMessages.retrieved_successfully(object_type=Facility),  # type: ignore
-        data=list(map(lambda facility: ReadFacilitySchema(**facility.to_dict()), facilities)),  # type: ignore
+        data=response_facilities,
         extras=extras,
         request=request,
     )
@@ -121,7 +127,7 @@ def get_facility_by_id(
 def update_facility(
     request: Request,
     facility_id: Annotated[str, Path(..., description="The id of the facility to get.")],
-    data_to_update: UpdateFacilitySchema,
+    data_to_update: UpdateFacilityRequestSchema,
     facility_service: Annotated[FacilityService, Depends(create_facility_service)],
 ) -> ResponseSchema:
     """Method for handling update a facility by id request.
@@ -129,7 +135,7 @@ def update_facility(
     Args:
         request (Request): The request object.
         facility_id (str): The id of the facility to update.
-        data_to_update (UpdateFacilitySchema): The data to update facility with.
+        data_to_update (UpdateFacilityRequestSchema): The data to update facility with.
         facility_service (FacilityService): The facility service to use.
 
     Returns:
@@ -141,6 +147,64 @@ def update_facility(
         status=HTTPResponseStatus.SUCCESS.value,
         status_code=status.HTTP_200_OK,
         message=SuccessMessages.updated_successfully(object_type=Facility),  # type: ignore
+        data=ReadFacilitySchema(**facility.to_dict()),  # type: ignore
+        request=request,
+    )
+
+    return response_data
+
+
+@facility_router.patch(path="/{facility_id}/approve", status_code=status.HTTP_200_OK, description="Approve a facility.")
+def approve_facility(
+    request: Request,
+    facility_id: Annotated[str, Path(..., description="The id of the facility to approve.")],
+    facility_service: Annotated[FacilityService, Depends(create_facility_service)],
+) -> ResponseSchema:
+    """Method for handling approve a facility by id request.
+
+    Args:
+        request (Request): The request object.
+        facility_id (str): The id of the facility to approve.
+        facility_service (FacilityService): The facility service to use.
+
+    Returns:
+        ResponseSchema: The response data.
+    """
+    facility = facility_service.approve_facility(facility_id=facility_id)
+
+    response_data = ResponseSchema(
+        status=HTTPResponseStatus.SUCCESS.value,
+        status_code=status.HTTP_200_OK,
+        message=SuccessMessages.approved_successfully(object_type=Facility),  # type: ignore
+        data=ReadFacilitySchema(**facility.to_dict()),  # type: ignore
+        request=request,
+    )
+
+    return response_data
+
+
+@facility_router.patch(path="/{facility_id}/license", status_code=status.HTTP_200_OK, description="License a facility.")
+def license_facility(
+    request: Request,
+    facility_id: Annotated[str, Path(..., description="The id of the facility to license.")],
+    facility_service: Annotated[FacilityService, Depends(create_facility_service)],
+) -> ResponseSchema:
+    """Method for handling license a facility by id request.
+
+    Args:
+        request (Request): The request object.
+        facility_id (str): The id of the facility to license.
+        facility_service (FacilityService): The facility service to use.
+
+    Returns:
+        ResponseSchema: The response data.
+    """
+    facility = facility_service.license_facility(facility_id=facility_id)
+
+    response_data = ResponseSchema(
+        status=HTTPResponseStatus.SUCCESS.value,
+        status_code=status.HTTP_200_OK,
+        message=SuccessMessages.licensed_successfully(object_type=Facility),  # type: ignore
         data=ReadFacilitySchema(**facility.to_dict()),  # type: ignore
         request=request,
     )

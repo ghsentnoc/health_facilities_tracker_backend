@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.core.factories.base_repository_factory import BaseRepositoryFactory
-from app.locations.dependencies.sub_district_service_dependency import create_sub_district_service
+from app.locations.dependencies.district_service_dependency import create_district_service
+from app.locations.factories.facility_contact_factory import FacilityContactRepositoryFactory
 from app.locations.models import Facility
 from app.locations.repositories.facility_repository import FacilityRepository
 from app.locations.services.facility_service import FacilityService
@@ -36,5 +37,10 @@ class FacilityServiceFactory:
         Returns:
             FacilityService: The created facility service.
         """
-        sub_district_service = create_sub_district_service(db_session=facility_repository.db_session)
-        return FacilityService(facility_repository=facility_repository, sub_district_service=sub_district_service)
+        facility_contact_repository = FacilityContactRepositoryFactory.create(db_session=facility_repository.db_session)
+        district_service = create_district_service(db_session=facility_repository.db_session)
+        return FacilityService(
+            facility_repository=facility_repository,
+            facility_contact_repository=facility_contact_repository,
+            district_service=district_service,
+        )

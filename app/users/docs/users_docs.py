@@ -1,3 +1,89 @@
+register_admin_docs = """
+### This endpoint is used for registering an admin.
+
+This flow is additive and does not replace the existing user endpoints.
+
+### Path Parameters:
+- None
+
+### Query Parameters:
+- None
+
+### Request Body:
+{
+    email: string,
+    role_ids: [string],
+    user_profile: {
+        first_name: string,
+        last_name: string,
+        phone_number: string,
+        country: string
+    }
+}
+
+### Response Body
+- General response schema
+"""
+
+register_facility_representative_docs = """
+### This endpoint is used for registering a facility representative.
+
+This keeps the existing self-service registration flow.
+
+### Path Parameters:
+- None
+
+### Query Parameters:
+- None
+
+### Request Body:
+{
+    email: string,
+    password: string,
+    user_profile: {
+        first_name: string,
+        last_name: string,
+        phone_number: string,
+        country: string
+    },
+    facility_info: {
+        facility_id: string
+    }
+}
+
+### Response Body
+- General response schema
+"""
+
+register_facility_representative_by_admin_docs = """
+### This endpoint is used for registering a facility representative by an admin.
+
+This is added alongside the existing registration flow so you can keep the current one.
+
+### Path Parameters:
+- None
+
+### Query Parameters:
+- None
+
+### Request Body:
+{
+    email: string,
+    user_profile: {
+        first_name: string,
+        last_name: string,
+        phone_number: string,
+        country: string
+    },
+    facility_info: {
+        facility_id: string
+    }
+}
+
+### Response Body
+- General response schema
+"""
+
 get_all_users_docs = """
 ### This endpoint is used for getting all users.
 
@@ -108,6 +194,57 @@ The following users have the authority to get all users:
 
 ### Request Body:
 - None
+
+### Response Body
+- General response schema
+"""
+
+update_admin_docs = """
+### This endpoint is used for updating an admin user by id.
+
+### Path Parameters:
+- user_id {string}
+
+### Query Parameters:
+- None
+
+### Request Body:
+{
+    email: Optional[string],
+    user_profile: Optional[{
+        first_name: string,
+        last_name: string,
+        phone_number: string,
+        country: string
+    }]
+}
+
+### Response Body
+- General response schema
+"""
+
+update_facility_representative_docs = """
+### This endpoint is used for updating a facility representative user by id.
+
+### Path Parameters:
+- user_id {string}
+
+### Query Parameters:
+- None
+
+### Request Body:
+{
+    email: Optional[string],
+    user_profile: Optional[{
+        first_name: string,
+        last_name: string,
+        phone_number: string,
+        country: string
+    }],
+    facility_info: Optional[{
+        facility_id: string
+    }]
+}
 
 ### Response Body
 - General response schema

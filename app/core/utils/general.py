@@ -15,7 +15,7 @@ from app.core.custom_exceptions import (
     InvalidSortModeError,
 )
 from app.core.schemas.query_params_schemas import AllowedFilterSchema, AllowedSortSchema, FilterSchema, PaginationSchema
-from app.core.utils.constants import PaginationConstants
+from app.core.utils.constants import MODEL_MAP, PaginationConstants
 from app.core.utils.messages import ErrorMessages
 from app.database.base import Base
 
@@ -363,6 +363,13 @@ def apply_sort(*, query: Query, sort_items: dict, model: Base) -> Query:
     for field, direction in sort_items.items():
         if hasattr(model, field):
             query = query.order_by(sort_mapper(sort_mode=direction)(getattr(model, field)))
+
+    if "joined_sort" in sort_items:
+        for item in sort_items["joined_sort"]:
+            if hasattr(MODEL_MAP[item.model], item.field):
+                query = query.order_by(
+                    sort_mapper(sort_mode=item.direction)(getattr(MODEL_MAP[item.model], item.field))
+                )
 
     return query
 

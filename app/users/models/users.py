@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
 
-from app.core.mixins.base import AuditCreateMixin, AuditUpdateMixin, IdentityMixin, SoftDeleteMixin
+from app.core.mixins.base_model_mixin import AuditCreateMixin, AuditUpdateMixin, IdentityMixin, SoftDeleteMixin
 from app.core.models.associations import user_roles  # noqa: F401
 from app.database.base import Base
 
@@ -12,31 +12,38 @@ class User(Base, IdentityMixin, AuditCreateMixin, AuditUpdateMixin, SoftDeleteMi
     __tablename__ = "users"
 
     email = Column(String(100), unique=True, index=True)
-    password_hash = Column(String(128), nullable=False)
+    password_hash = Column(String(128), nullable=True)
     first_time_login = Column(Boolean, default=True)
     token_version = Column(Integer, default=0)
-    is_logout = Column(Boolean, default=True)
     last_login = Column(DateTime, nullable=True)
     is_verified = Column(Boolean, default=False)
     is_suspended = Column(Boolean, default=False)
     is_approved = Column(Boolean, default=False)
 
     profile = relationship("UserProfile", back_populates="user", uselist=False)
+    user_facility = relationship("UserFacilityAssociation", back_populates="user", uselist=False)
     roles = relationship("Role", secondary="user_roles", back_populates="users")
+    refresh_tokens = relationship("RefreshToken", back_populates="user")
+    applications = relationship("Application", back_populates="user")
+    auth_sessions = relationship("AuthSession", back_populates="user")
 
     def to_dict(self) -> dict:
         """Convert User model to dictionary."""
         return {
             "id": self.id,
             "email": self.email,
-            "first_name": self.profile.first_name if self.profile.first_name else None,
-            "last_name": self.profile.last_name if self.profile.last_name else None,
-            "phone_number": self.profile.phone_number if self.profile.phone_number else None,
-            "country": self.profile.country if self.profile.country else None,
-            "facility_name": self.profile.facility.name if self.profile.facility.name else None,
+            "profile": self.profile.to_dict(),
+            "facility": (
+                {
+                    "id": self.user_facility.facility_id,
+                    "name": self.user_facility.to_dict().get("facility_name"),
+                }
+                if self.user_facility
+                else None
+            ),
             "first_time_login": self.first_time_login,
             "token_version": self.token_version,
-            "is_logout": self.is_logout,
+            "is_logout": getattr(self, "is_logout", False),
             "last_login": self.last_login if self.last_login else None,
             "is_verified": self.is_verified,
             "is_suspended": self.is_suspended,

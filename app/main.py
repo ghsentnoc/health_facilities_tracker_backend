@@ -6,6 +6,7 @@ from fastapi_mail import ConnectionConfig, FastMail
 from pydantic import SecretStr
 
 from app.auth.custom_exceptions import AuthHTTPException
+from app.auth.routes.api.v1.application_routes import application_router
 from app.auth.routes.api.v1.auth_routes import auth_router
 from app.auth.routes.api.v1.permission_routes import permission_router
 from app.auth.routes.api.v1.role_routes import role_router
@@ -25,8 +26,9 @@ from app.core.utils.constants import ApplicationConstants
 from app.locations.routes.api.v1.district_routes import district_router
 from app.locations.routes.api.v1.facility_routes import facility_router
 from app.locations.routes.api.v1.region_routes import region_router
-from app.locations.routes.api.v1.sub_district_routes import sub_district_router
-from app.users.routes.user_routes import user_router
+from app.users.routes.api.v1.user_facility_association_routes import user_facility_association_router
+from app.users.routes.api.v1.user_profile_routes import user_profile_router
+from app.users.routes.api.v1.user_routes import user_router
 
 app = FastAPI(
     title=ApplicationConstants.APP_NAME.value,
@@ -94,13 +96,23 @@ app_v1.add_exception_handler(InvalidPhoneNumberError, authentication_invalid_pho
 #                                                                                #
 ##################################################################################
 app_v1.include_router(root_api_router)
-app_v1.include_router(auth_router)
+
+# User routes
 app_v1.include_router(user_router)
+app_v1.include_router(user_profile_router)
+app_v1.include_router(user_facility_association_router)
+
+# Auth routes
+app_v1.include_router(auth_router)
 app_v1.include_router(role_router)
 app_v1.include_router(permission_router)
+
+# Application routes
+app_v1.include_router(application_router)
+
+# Location routes
 app_v1.include_router(region_router)
 app_v1.include_router(district_router)
-app_v1.include_router(sub_district_router)
 app_v1.include_router(facility_router)
 
 

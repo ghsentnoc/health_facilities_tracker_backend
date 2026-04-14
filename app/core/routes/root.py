@@ -1,7 +1,8 @@
 from typing import Annotated, Optional
 
-from fastapi import APIRouter, Query, Request, status
+from fastapi import APIRouter, Depends, Query, Request, status
 
+from app.auth.dependencies.auth_dependency import validate_api_key
 from app.core.docs.root_docs import read_root_docs
 from app.core.schemas.base_entity_response_schema import ResponseSchema
 from app.core.utils.allowed_filters_sort import allowed_filters, allowed_sorts
@@ -9,7 +10,7 @@ from app.core.utils.constants import HTTPResponseStatus
 from app.core.utils.general import process_filter_sort_and_pagination
 from app.core.utils.messages import SuccessMessages
 
-root_api_router = APIRouter(prefix="", tags=["Root"])
+root_api_router = APIRouter(prefix="", tags=["Root"], dependencies=[Depends(validate_api_key)])
 
 
 @root_api_router.get(path="/", status_code=status.HTTP_200_OK, description=read_root_docs)

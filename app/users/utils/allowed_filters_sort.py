@@ -2,7 +2,7 @@ from app.core.schemas.query_params_schemas import AllowedFilterSchema, AllowedSo
 from app.core.utils.allowed_filters_sort import created_at_filter, created_at_sort, is_deleted_filter, is_deleted_sort
 
 ########################### user filters without joins ############################
-user_filters_without_joins = ["email", "created_at", "deleted_at", "is_logout", "is_suspended", "is_verified"]
+user_filters_without_joins = ["email", "created_at", "deleted_at", "is_suspended", "is_verified"]
 
 ########################### user filters with joins ###############################
 user_filters_with_joins = ["first_name", "phone_number", "facility_name", "country", "role"]

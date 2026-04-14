@@ -3,7 +3,7 @@ from typing import Any
 from sqlalchemy import Column, ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from app.core.mixins.base import (
+from app.core.mixins.base_model_mixin import (
     AuditCreateMixin,
     AuditUpdateMixin,
     IdentityMixin,
@@ -28,7 +28,7 @@ class District(Base, IdentityMixin, AuditCreateMixin, AuditUpdateMixin, SoftDele
 
     # Relationships
     region = relationship("Region", back_populates="districts")
-    sub_districts = relationship("SubDistrict", back_populates="district")
+    facilities = relationship("Facility", back_populates="district")
 
     def to_dict(self) -> dict[str, Any]:
         """Convert the District instance to a dictionary."""

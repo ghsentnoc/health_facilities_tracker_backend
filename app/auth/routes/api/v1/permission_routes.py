@@ -2,6 +2,7 @@ from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, Query, Request, status
 
+from app.auth.dependencies.auth_dependency import validate_api_key
 from app.auth.dependencies.permission_service_dependency import create_permission_service
 from app.auth.docs.permission_docs import get_all_permissions_docs
 from app.auth.models import Permission
@@ -11,7 +12,11 @@ from app.core.schemas.base_entity_response_schema import ResponseSchema
 from app.core.utils.constants import HTTPResponseStatus
 from app.core.utils.messages import SuccessMessages
 
-permission_router = APIRouter(prefix="/permissions", tags=["Permission"])
+permission_router = APIRouter(
+    prefix="/permissions",
+    tags=["Permission"],
+    dependencies=[Depends(validate_api_key)],
+)
 
 
 @permission_router.get(path="", status_code=status.HTTP_200_OK, description=get_all_permissions_docs)

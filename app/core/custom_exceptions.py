@@ -56,3 +56,19 @@ class ExpiredTokenError(Exception):
 
 class InvalidTokenError(Exception):
     """Exception for when a token is invalid."""
+
+
+class FailedToSetDataInRedisError(Exception):
+    """Exception for when setting data in Redis fails."""
+
+
+class FailedToRetrieveDataFromRedisError(Exception):
+    """Exception for when retrieving data from Redis fails."""
+
+
+class FailedToDeleteDataFromRedisError(Exception):
+    """Exception for when deleting data from Redis fails."""
+
+
+class FacilityNotApprovedError(Exception):
+    """Exception for when a facility is not approved."""

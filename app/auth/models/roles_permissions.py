@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-from app.core.mixins.base import AuditCreateMixin, AuditUpdateMixin, IdentityMixin, SoftDeleteMixin
+from app.core.mixins.base_model_mixin import AuditCreateMixin, AuditUpdateMixin, IdentityMixin, SoftDeleteMixin
 from app.core.models.associations import role_permissions, user_roles  # noqa: F401
 from app.database.base import Base
 
@@ -15,6 +15,7 @@ class Permission(Base, IdentityMixin, AuditCreateMixin):
 
     # relationships
     roles = relationship("Role", secondary="role_permissions", back_populates="permissions")
+    applications = relationship("Application", secondary="application_permissions", back_populates="permissions")
 
     def to_dict(self) -> dict:
         """Returns a dictionary representation of the permission object"""

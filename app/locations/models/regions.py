@@ -3,7 +3,7 @@ from typing import Any
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-from app.core.mixins.base import (
+from app.core.mixins.base_model_mixin import (
     AuditCreateMixin,
     AuditUpdateMixin,
     IdentityMixin,

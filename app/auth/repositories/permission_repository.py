@@ -3,7 +3,7 @@ from typing import Any, Optional, Type, Union
 from sqlalchemy.orm import Session
 
 from app.auth.models import Permission
-from app.core.base_repository import BaseReadRepository, BaseWriteRepository
+from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
 
 
 class PermissionRepository(BaseReadRepository[Permission], BaseWriteRepository[Permission]):

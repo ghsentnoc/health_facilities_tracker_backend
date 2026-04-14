@@ -2,6 +2,7 @@ from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, Path, Query, Request, status
 
+from app.auth.dependencies.auth_dependency import validate_api_key
 from app.core.schemas.base_entity_response_schema import ResponseSchema
 from app.core.utils.constants import HTTPResponseStatus
 from app.core.utils.messages import SuccessMessages
@@ -19,7 +20,7 @@ from app.locations.schemas.request.district import CreateDistrictSchema, UpdateD
 from app.locations.schemas.response.district import ReadDistrictSchema
 from app.locations.services.district_service import DistrictService
 
-district_router = APIRouter(prefix="/districts", tags=["District"])
+district_router = APIRouter(prefix="/districts", tags=["District"], dependencies=[Depends(validate_api_key)])
 
 
 @district_router.post(path="", status_code=status.HTTP_201_CREATED, description=create_district_docs)
@@ -76,11 +77,16 @@ def get_all_districts(
     extras.update({"pagination": district_service.get_pagination_extras(request=request)})
     extras["pagination"].update({"total_retrieved": len(districts)})
 
+    response_districts = [
+        district if isinstance(district, dict) else ReadDistrictSchema(**district.to_dict())  # type: ignore
+        for district in districts
+    ]
+
     response_data = ResponseSchema(
         status=HTTPResponseStatus.SUCCESS.value,
         status_code=status.HTTP_200_OK,
         message=SuccessMessages.retrieved_successfully(object_type=District),  # type: ignore
-        data=list(map(lambda district: ReadDistrictSchema(**district.to_dict()), districts)),  # type: ignore
+        data=response_districts,
         extras=extras,
         request=request,
     )

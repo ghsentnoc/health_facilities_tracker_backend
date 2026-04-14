@@ -30,28 +30,7 @@ class BaseUserProfileSchema(BaseModel):
         return value
 
 
-class CreateUserProfileRequestSchema(BaseUserProfileSchema):
-    """Schema to create a user profile."""
-
-    facility_id: Optional[str] = None
-
-    @field_validator("facility_id")
-    @classmethod
-    def validate_id(cls, value: str) -> str:
-        """Check if the id is valid.
-
-        Args:
-            value (str): The id to validate.
-
-        Returns:
-            str: The validated id.
-        """
-        if not is_valid_uuid(uuid_to_test=value):
-            raise ValueError(ErrorMessages.INVALID_ID.value)
-        return value
-
-
-class CreateUserProfileSchema(CreateUserProfileRequestSchema):
+class CreateUserProfileSchema(BaseUserProfileSchema):
     """Schema for request when creating a user profile."""
 
     user_id: str
@@ -72,6 +51,20 @@ class CreateUserProfileSchema(CreateUserProfileRequestSchema):
         return value
 
 
-UpdateUserProfileRequestSchema = CreateUserProfileRequestSchema
+UpdateUserProfileSchema = BaseUserProfileSchema
 
-UpdateUserProfileSchema = CreateUserProfileRequestSchema
+
+class UpdateUserProfileRequestSchema(BaseUserProfileSchema):
+    """Schema for updating a user profile plus facility assignment."""
+
+    facility_id: Optional[str] = None
+
+    @field_validator("facility_id")
+    @classmethod
+    def validate_facility_id(cls, value: Optional[str]) -> Optional[str]:
+        """Check if the facility id is valid."""
+        if value is None:
+            return value
+        if not is_valid_uuid(uuid_to_test=value):
+            raise ValueError(ErrorMessages.INVALID_ID.value)
+        return value

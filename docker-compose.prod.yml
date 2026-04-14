@@ -10,5 +10,12 @@ services:
     volumes:
       - health-facilities-tracker-db-prod-data:/var/lib/mysql
 
+  health-facilities-tracker-redis:
+    ports:
+        - ${REDIS_PORT_PROD:-6380}:6379
+    volumes:
+      - health-facilities-tracker-redis-prod-data:/data
+
 volumes:
   health-facilities-tracker-db-prod-data:
+  health-facilities-tracker-redis-prod-data:
