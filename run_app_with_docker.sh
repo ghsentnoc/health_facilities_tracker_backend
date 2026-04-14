@@ -30,4 +30,4 @@ PROJECT_ENV_LOWER="${PROJECT_ENV_LOWER:-dev}"
 echo "Environment: $PROJECT_ENV"
 
 # Build and run the Docker image
-sudo docker compose -f docker-compose.yml -f docker-compose."$PROJECT_ENV_LOWER".yml up --build
+sudo docker compose -f docker-compose.yml -f docker-compose."$PROJECT_ENV_LOWER".yml up --build -d
