@@ -6,13 +6,6 @@ from pydantic import BaseModel
 from app.core.schemas.base_read_schema import BaseReadSchema
 
 
-class ReadConditionalLogicSchema(BaseModel):
-    """Schema for reading conditional logic."""
-
-    depends_on_field: str
-    show_if: Any
-
-
 class ReadFieldValidationSchema(BaseModel):
     """Schema for reading field validation rules."""
 
@@ -33,10 +26,10 @@ class ReadFormFieldSchema(BaseReadSchema):
     required: bool
     placeholder: Optional[str] = None
     options: Optional[list[str]] = None
-    validation: Optional[ReadFieldValidationSchema] = None
+    validation: Optional[Any] = None
     default_value: Optional[str] = None
     order: int
-    conditional_logic: Optional[ReadConditionalLogicSchema] = None
+    conditional_logic: Optional[Any] = None
     help_text: Optional[str] = None
     is_deleted: Optional[bool] = None
     deleted_at: Optional[datetime] = None

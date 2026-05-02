@@ -149,6 +149,40 @@ class FormService(BaseService[Form]):
         _ = self.get_by_id(entity_id=form_id)
         return self.form_section_repository.get_sections_for_form(form_id=form_id)
 
+    def get_section_by_id(self, *, section_id: str) -> FormSection:
+        """Get a form section by its id.
+
+        Args:
+            section_id (str): The id of the section.
+
+        Returns:
+            FormSection: The section instance.
+        """
+        section = self.form_section_repository.get_by_id(entity_id=section_id)
+        if not section or section.is_deleted:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=ErrorMessages.entity_does_not_exists(entity_type=FormSection, value=section_id),
+            )
+        return section
+
+    def get_field_by_id(self, *, field_id: str) -> FormField:
+        """Get a form field by its id.
+
+        Args:
+            field_id (str): The id of the field.
+
+        Returns:
+            FormField: The field instance.
+        """
+        field = self.form_field_repository.get_by_id(entity_id=field_id)
+        if not field or field.is_deleted:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=ErrorMessages.entity_does_not_exists(entity_type=FormField, value=field_id),
+            )
+        return field
+
     def create_section(self, *, form_id: str, section_data: CreateFormSectionRequestSchema) -> FormSection:
         """Create a new section for a form.
 

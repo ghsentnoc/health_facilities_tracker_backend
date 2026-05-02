@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.core.utils.constants import BASE_DIR
@@ -8,7 +10,7 @@ class RedisConfig(BaseSettings):
 
     REDIS_HOST: str = "127.0.0.1"
     REDIS_DOCKER_HOST: str = "nurture-redis"
-    REDIS_PASSWORD: str = None  # type: ignore
+    REDIS_PASSWORD: Optional[str] = None
     REDIS_PORT_PROD: int = 6379
     REDIS_PORT_DEV: int = 6379
     REDIS_PORT_TEST: int = 6379

@@ -358,6 +358,33 @@ def create_field(
     )
 
 
+@form_router.get(path="/sections/{section_id}", status_code=status.HTTP_200_OK, description=get_sections_docs)
+def get_section_by_id(
+    request: Request,
+    section_id: Annotated[str, Path(..., description="The id of the section to get.")],
+    form_service: Annotated[FormService, Depends(create_form_service)],
+) -> ResponseSchema:
+    """Handle get a form section by id request.
+
+    Args:
+        request (Request): The request object.
+        section_id (str): The id of the section to retrieve.
+        form_service (FormService): The form service to use.
+
+    Returns:
+        ResponseSchema: The response data.
+    """
+    section = form_service.get_section_by_id(section_id=section_id)
+
+    return ResponseSchema(
+        status=HTTPResponseStatus.SUCCESS.value,
+        status_code=status.HTTP_200_OK,
+        message=SuccessMessages.retrieved_successfully(object_type=FormSection),
+        data=ReadFormSectionSchema(**section.to_dict()),
+        request=request,
+    )
+
+
 @form_router.get(path="/sections/{section_id}/fields", status_code=status.HTTP_200_OK, description=get_fields_docs)
 def get_fields(
     request: Request,
@@ -382,6 +409,33 @@ def get_fields(
         status_code=status.HTTP_200_OK,
         message=SuccessMessages.retrieved_successfully(object_type=FormField),
         data=response_fields,
+        request=request,
+    )
+
+
+@form_router.get(path="/fields/{field_id}", status_code=status.HTTP_200_OK, description=get_fields_docs)
+def get_field_by_id(
+    request: Request,
+    field_id: Annotated[str, Path(..., description="The id of the field to get.")],
+    form_service: Annotated[FormService, Depends(create_form_service)],
+) -> ResponseSchema:
+    """Handle get a form field by id request.
+
+    Args:
+        request (Request): The request object.
+        field_id (str): The id of the field to retrieve.
+        form_service (FormService): The form service to use.
+
+    Returns:
+        ResponseSchema: The response data.
+    """
+    field = form_service.get_field_by_id(field_id=field_id)
+
+    return ResponseSchema(
+        status=HTTPResponseStatus.SUCCESS.value,
+        status_code=status.HTTP_200_OK,
+        message=SuccessMessages.retrieved_successfully(object_type=FormField),
+        data=ReadFormFieldSchema(**field.to_dict()),
         request=request,
     )
 

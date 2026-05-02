@@ -5,13 +5,6 @@ from pydantic import BaseModel, field_validator
 from app.forms.utils.constants import FieldType, FormStatus
 
 
-class ConditionalLogicSchema(BaseModel):
-    """Schema for conditional logic on a field."""
-
-    depends_on_field: str
-    show_if: Any
-
-
 class FieldValidationSchema(BaseModel):
     """Schema for field validation rules."""
 
@@ -33,7 +26,7 @@ class CreateFormFieldRequestSchema(BaseModel):
     validation: Optional[FieldValidationSchema] = None
     default_value: Optional[str] = None
     order: int = 0
-    conditional_logic: Optional[ConditionalLogicSchema] = None
+    conditional_logic: Optional[dict[str, Any]] = None
     help_text: Optional[str] = None
 
     @field_validator("field_type")
@@ -65,7 +58,7 @@ class UpdateFormFieldRequestSchema(BaseModel):
     validation: Optional[FieldValidationSchema] = None
     default_value: Optional[str] = None
     order: Optional[int] = None
-    conditional_logic: Optional[ConditionalLogicSchema] = None
+    conditional_logic: Optional[dict[str, Any]] = None
     help_text: Optional[str] = None
 
     @field_validator("field_type")
