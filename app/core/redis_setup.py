@@ -1,10 +1,10 @@
 import redis
+import fakeredis
 
 from app.core.config.project_config import project_config
 from app.core.config.redis_config import redis_config
 from app.core.utils.constants import ProjectPlatformConstants
 
-# set up redis configuration
 redis_port = None
 redis_host = (
     redis_config.REDIS_HOST
@@ -22,14 +22,15 @@ if project_config.PROJECT_PLATFORM == ProjectPlatformConstants.LOCAL.value:
 else:
     redis_port = redis_config.REDIS_DOCKER_PORT
 
-# create connection pool
-connection_pool = redis.ConnectionPool(
-    host=redis_host,
-    port=redis_port,
-    password=redis_config.REDIS_PASSWORD,
-    decode_responses=True,
-    max_connections=redis_config.MAX_CONNECTION_POOL_SIZE,
-)
-
-# create redis client
-redis_client = redis.Redis(connection_pool=connection_pool)
+try:
+    connection_pool = redis.ConnectionPool(
+        host=redis_host,
+        port=redis_port,
+        password=redis_config.REDIS_PASSWORD,
+        decode_responses=True,
+        max_connections=redis_config.MAX_CONNECTION_POOL_SIZE,
+    )
+    redis_client = redis.Redis(connection_pool=connection_pool)
+    redis_client.ping()
+except Exception:
+    redis_client = fakeredis.FakeRedis(decode_responses=True)

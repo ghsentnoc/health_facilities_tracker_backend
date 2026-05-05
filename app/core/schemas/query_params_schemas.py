@@ -30,8 +30,10 @@ class AllowedFilterSchema(BaseModel):
 class FilterSchema(BaseModel):
     """The schema for the filters."""
 
-    value: Union[str, int]
+    value: Union[bool, str, int, None]
     operator: str = "eq"
+
+    model_config = {"arbitrary_types_allowed": True}
 
     @field_validator("operator", mode="before")
     @classmethod
@@ -50,15 +52,19 @@ class FilterSchema(BaseModel):
 
     @field_validator("value", mode="before")
     @classmethod
-    def convert_value_to_int_if_digit(cls, value: str) -> str | int:
-        """Convert value to int if it's a digit.
+    def convert_value_to_int_if_digit(cls, value) -> Union[bool, str, int, None]:
+        """Convert value to int if it's a digit string; preserve booleans as-is.
 
         Args:
-            value (str): The value to convert.
+            value: The value to convert.
 
         Returns:
-            str | int: The converted value.
+            bool | str | int | None: The converted value.
         """
+        if isinstance(value, bool):
+            return value
+        if value is None:
+            return value
         if str(value).isdigit():
             return int(value)
         return value

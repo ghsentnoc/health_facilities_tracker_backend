@@ -201,12 +201,8 @@ class BaseReadRepository(BaseRepository[T]):
 
         if entity:  # type: ignore
             if isinstance(entity, list):
-                # exists but deleted
                 return all([_entity.is_deleted for _entity in entity])  # type: ignore
-            elif isinstance(entity, type(T)):  # type: ignore
-                # exists but deleted
-                return entity.is_deleted  # type: ignore
-        # exists and not deleted
+            return bool(entity.is_deleted)  # type: ignore
         return False
 
     @abstractmethod

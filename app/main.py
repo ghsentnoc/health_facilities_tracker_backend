@@ -26,6 +26,8 @@ from app.core.utils.constants import ApplicationConstants
 from app.locations.routes.api.v1.district_routes import district_router
 from app.locations.routes.api.v1.facility_routes import facility_router
 from app.locations.routes.api.v1.region_routes import region_router
+from app.forms.routes.api.v1.form_response_routes import form_response_router
+from app.forms.routes.api.v1.form_routes import form_router
 from app.users.routes.api.v1.user_facility_association_routes import user_facility_association_router
 from app.users.routes.api.v1.user_profile_routes import user_profile_router
 from app.users.routes.api.v1.user_routes import user_router
@@ -114,6 +116,10 @@ app_v1.include_router(application_router)
 app_v1.include_router(region_router)
 app_v1.include_router(district_router)
 app_v1.include_router(facility_router)
+
+# Form routes
+app_v1.include_router(form_router)
+app_v1.include_router(form_response_router)
 
 
 ##################################################################################
