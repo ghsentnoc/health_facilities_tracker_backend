@@ -6,6 +6,7 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 
+from app.auth.models import APIKey, Application
 from app.auth.repositories.applications__api_key_repository import (
     APIKeyRepository,
     ApplicationRepository,
@@ -29,7 +30,6 @@ from app.auth.utils.allowed_filters_sort import (
 from app.auth.utils.constants import APIKeyRevocationReasonConstants
 from app.auth.utils.hash_password import PasswordHashManager
 from app.core.custom_exceptions import ObjectAlreadyExistsException
-from app.core.models import APIKey, Application
 from app.core.services.base_service import BaseService
 from app.core.utils.messages import ErrorMessages
 from app.core.utils.validators import is_valid_uuid
