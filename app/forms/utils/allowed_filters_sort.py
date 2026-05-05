@@ -4,7 +4,15 @@ from app.core.utils.allowed_filters_sort import created_at_filter, created_at_so
 #################################### filters without joins ##################################
 form_filters_without_joins = ["title", "status", "created_by", "created_at", "is_deleted"]
 form_section_filters_without_joins = ["title", "form_id", "created_at", "is_deleted"]
-form_field_filters_without_joins = ["label", "field_type", "required", "section_id", "form_id", "created_at", "is_deleted"]
+form_field_filters_without_joins = [
+    "label",
+    "field_type",
+    "required",
+    "section_id",
+    "form_id",
+    "created_at",
+    "is_deleted",
+]
 form_response_filters_without_joins = ["form_id", "submitted_by", "submitted_at", "created_at", "is_deleted"]
 
 #################################### filters with joins ######################################

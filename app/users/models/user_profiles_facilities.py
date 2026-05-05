@@ -3,7 +3,8 @@ from sqlalchemy.orm import relationship
 
 from app.core.mixins.base_model_mixin import AuditCreateMixin, AuditUpdateMixin, IdentityMixin, SoftDeleteMixin
 from app.database.base import Base
-from app.locations.models import Facility  # noqa
+
+# from app.locations.models import Facility  # noqa
 
 
 class UserProfile(Base, IdentityMixin, AuditCreateMixin, AuditUpdateMixin, SoftDeleteMixin):

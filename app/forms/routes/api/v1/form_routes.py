@@ -214,6 +214,7 @@ def restore_form(
 
 # ─── Section endpoints ──────────────────────────────────────────────────────
 
+
 @form_router.post(path="/{form_id}/sections", status_code=status.HTTP_201_CREATED, description=create_section_docs)
 def create_section(
     request: Request,
@@ -329,7 +330,10 @@ def delete_section(
 
 # ─── Field endpoints ────────────────────────────────────────────────────────
 
-@form_router.post(path="/sections/{section_id}/fields", status_code=status.HTTP_201_CREATED, description=create_field_docs)
+
+@form_router.post(
+    path="/sections/{section_id}/fields", status_code=status.HTTP_201_CREATED, description=create_field_docs
+)
 def create_field(
     request: Request,
     section_id: Annotated[str, Path(..., description="The id of the section.")],

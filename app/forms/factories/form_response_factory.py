@@ -20,9 +20,7 @@ class FormResponseRepositoryFactory(BaseRepositoryFactory[FormResponse, FormResp
         Returns:
             FormResponseRepository: The created form response repository.
         """
-        return cls._default_create(
-            db_session=db_session, model=FormResponse, repository_class=FormResponseRepository
-        )
+        return cls._default_create(db_session=db_session, model=FormResponse, repository_class=FormResponseRepository)
 
 
 class FormResponseServiceFactory:

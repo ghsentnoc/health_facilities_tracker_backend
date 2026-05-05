@@ -52,7 +52,7 @@ class FilterSchema(BaseModel):
 
     @field_validator("value", mode="before")
     @classmethod
-    def convert_value_to_int_if_digit(cls, value) -> Union[bool, str, int, None]:
+    def convert_value_to_int_if_digit(cls, value: str) -> Union[bool, str, int, None]:
         """Convert value to int if it's a digit string; preserve booleans as-is.
 
         Args:

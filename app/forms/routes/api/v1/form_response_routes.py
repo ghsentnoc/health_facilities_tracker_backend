@@ -88,9 +88,7 @@ def get_all_form_responses(
     )
 
 
-@form_response_router.get(
-    path="/{response_id}", status_code=status.HTTP_200_OK, description=get_response_by_id_docs
-)
+@form_response_router.get(path="/{response_id}", status_code=status.HTTP_200_OK, description=get_response_by_id_docs)
 def get_form_response_by_id(
     request: Request,
     response_id: Annotated[str, Path(..., description="The id of the form response to get.")],
@@ -147,9 +145,7 @@ def get_responses_for_form(
     )
 
 
-@form_response_router.delete(
-    path="/{response_id}", status_code=status.HTTP_200_OK, description=delete_response_docs
-)
+@form_response_router.delete(path="/{response_id}", status_code=status.HTTP_200_OK, description=delete_response_docs)
 def delete_form_response(
     request: Request,
     response_id: Annotated[str, Path(..., description="The id of the form response to delete.")],

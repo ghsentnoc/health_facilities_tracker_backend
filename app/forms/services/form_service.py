@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 
 from fastapi import HTTPException, status
 
@@ -17,18 +16,10 @@ from app.forms.schemas.request.form import (
     UpdateFormSectionRequestSchema,
 )
 from app.forms.utils.allowed_filters_sort import (
-    allowed_form_field_filters,
-    allowed_form_field_sorts,
     allowed_form_filters,
-    allowed_form_section_filters,
-    allowed_form_section_sorts,
     allowed_form_sorts,
-    form_field_filters_with_joins,
-    form_field_filters_without_joins,
     form_filters_with_joins,
     form_filters_without_joins,
-    form_section_filters_with_joins,
-    form_section_filters_without_joins,
 )
 
 
@@ -101,7 +92,7 @@ class FormService(BaseService[Form]):
 
         if form_data.sections:
             for section_data in form_data.sections:
-                self._create_section_with_fields(form_id=form.id, section_data=section_data)
+                self._create_section_with_fields(form_id=str(form.id), section_data=section_data)
 
         return self.form_repository.get_by_id(entity_id=form.id)  # type: ignore
 
@@ -196,9 +187,7 @@ class FormService(BaseService[Form]):
         _ = self.get_by_id(entity_id=form_id)
         return self._create_section_with_fields(form_id=form_id, section_data=section_data)
 
-    def update_section(
-        self, *, section_id: str, data_to_update: UpdateFormSectionRequestSchema
-    ) -> FormSection:
+    def update_section(self, *, section_id: str, data_to_update: UpdateFormSectionRequestSchema) -> FormSection:
         """Update an existing form section.
 
         Args:
@@ -336,9 +325,7 @@ class FormService(BaseService[Form]):
             )
         return self.form_field_repository.delete(entity_to_delete=field)
 
-    def _create_section_with_fields(
-        self, *, form_id: str, section_data: CreateFormSectionRequestSchema
-    ) -> FormSection:
+    def _create_section_with_fields(self, *, form_id: str, section_data: CreateFormSectionRequestSchema) -> FormSection:
         """Internal helper to create a section and its fields.
 
         Args:

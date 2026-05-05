@@ -1,5 +1,5 @@
-import redis
 import fakeredis
+import redis
 
 from app.core.config.project_config import project_config
 from app.core.config.redis_config import redis_config

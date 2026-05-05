@@ -37,9 +37,7 @@ class FormSectionRepositoryFactory(BaseRepositoryFactory[FormSection, FormSectio
         Returns:
             FormSectionRepository: The created form section repository.
         """
-        return cls._default_create(
-            db_session=db_session, model=FormSection, repository_class=FormSectionRepository
-        )
+        return cls._default_create(db_session=db_session, model=FormSection, repository_class=FormSectionRepository)
 
 
 class FormFieldRepositoryFactory(BaseRepositoryFactory[FormField, FormFieldRepository]):
@@ -55,9 +53,7 @@ class FormFieldRepositoryFactory(BaseRepositoryFactory[FormField, FormFieldRepos
         Returns:
             FormFieldRepository: The created form field repository.
         """
-        return cls._default_create(
-            db_session=db_session, model=FormField, repository_class=FormFieldRepository
-        )
+        return cls._default_create(db_session=db_session, model=FormField, repository_class=FormFieldRepository)
 
 
 class FormServiceFactory:

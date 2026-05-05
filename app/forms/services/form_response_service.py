@@ -145,18 +145,26 @@ class FormResponseService(BaseService[FormResponse]):
         for field in all_fields:
             conditional = field.conditional_logic
             if conditional:
-                depends_on = conditional.get("depends_on_field") if isinstance(conditional, dict) else getattr(conditional, "depends_on_field", None)
-                show_if = conditional.get("show_if") if isinstance(conditional, dict) else getattr(conditional, "show_if", None)
+                depends_on = (
+                    conditional.get("depends_on_field")
+                    if isinstance(conditional, dict)
+                    else getattr(conditional, "depends_on_field", None)
+                )
+                show_if = (
+                    conditional.get("show_if")
+                    if isinstance(conditional, dict)
+                    else getattr(conditional, "show_if", None)
+                )
                 answer_for_trigger = answers.get(depends_on)
                 if str(answer_for_trigger) == str(show_if):
-                    visible_field_ids.add(field.id)
+                    visible_field_ids.add(str(field.id))
             else:
-                visible_field_ids.add(field.id)
+                visible_field_ids.add(str(field.id))
 
         filtered_answers = {field_id: value for field_id, value in answers.items() if field_id in visible_field_ids}
 
         for field_id in visible_field_ids:
-            field = fields_by_id.get(field_id)
+            field = fields_by_id[field_id]  # type: ignore
             if field and field.required and field_id not in filtered_answers:
                 raise HTTPException(
                     status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,

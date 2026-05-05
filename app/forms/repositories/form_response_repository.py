@@ -72,8 +72,4 @@ class FormResponseRepository(BaseReadRepository[FormResponse], BaseWriteReposito
         Returns:
             list[FormResponse]: A list of form responses for the form.
         """
-        return (
-            self.db_session.query(FormResponse)
-            .filter_by(form_id=form_id, is_deleted=False)
-            .all()
-        )
+        return self.db_session.query(FormResponse).filter_by(form_id=form_id, is_deleted=False).all()

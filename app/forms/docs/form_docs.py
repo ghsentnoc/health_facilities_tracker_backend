@@ -20,7 +20,8 @@ Optionally include sections (with fields) to create the full form structure in o
                     "required": false,
                     "placeholder": "string (optional)",
                     "options": ["string"] (optional),
-                    "validation": { "min_length": int, "max_length": int, "min": float, "max": float, "regex": "string" } (optional),
+                    "validation": { 
+                    "min_length": int, "max_length": int, "min": float, "max": float, "regex": "string" } (optional),
                     "default_value": "string (optional)",
                     "order": 0,
                     "conditional_logic": { "depends_on_field": "field_id", "show_if": "value" } (optional),
@@ -40,7 +41,8 @@ get_all_forms_docs = """
 
 ### Query Parameters:
 - filters: A JSON string representing the filters to apply.
-    - Allowed filters: title (eq, like), status (eq), created_by (eq), created_at (eq, ne, gt, lt, ge, le), is_deleted (eq)
+    - Allowed filters: title (eq, like), status (eq), 
+    created_by (eq), created_at (eq, ne, gt, lt, ge, le), is_deleted (eq)
 - sort: A JSON string representing the sort order.
     - Allowed sorts: title (asc, desc), status (asc, desc), created_at (asc, desc)
 - pagination: A JSON string representing the pagination settings.

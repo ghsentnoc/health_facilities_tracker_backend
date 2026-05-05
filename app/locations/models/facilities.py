@@ -10,8 +10,7 @@ from app.core.mixins.base_model_mixin import (
     SoftDeleteMixin,
 )
 from app.database.base import Base
-
-# from app.users.models import UserProfile  # noqa: F401
+from app.users.models import UserFacilityAssociation  # noqa: F401
 
 
 class Facility(Base, IdentityMixin, AuditCreateMixin, AuditUpdateMixin, SoftDeleteMixin):

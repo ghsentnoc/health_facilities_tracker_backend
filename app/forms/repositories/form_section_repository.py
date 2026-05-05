@@ -3,7 +3,7 @@ from typing import Any, Optional, Type, Union
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
-from app.forms.models import FormField, FormSection
+from app.forms.models import FormSection
 
 
 class FormSectionRepository(BaseReadRepository[FormSection], BaseWriteRepository[FormSection]):

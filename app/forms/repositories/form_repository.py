@@ -3,7 +3,7 @@ from typing import Any, Optional, Type, Union
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.repositories.sql_base_repository import BaseReadRepository, BaseWriteRepository
-from app.forms.models import Form, FormField, FormSection
+from app.forms.models import Form, FormSection
 
 
 class FormRepository(BaseReadRepository[Form], BaseWriteRepository[Form]):
@@ -53,9 +53,7 @@ class FormRepository(BaseReadRepository[Form], BaseWriteRepository[Form]):
             list[Form]: A list of all form instances.
         """
         query = self.db_session.query(Form)
-        query = query.options(
-            joinedload(Form.sections).joinedload(FormSection.fields)
-        )
+        query = query.options(joinedload(Form.sections).joinedload(FormSection.fields))
 
         return self._default_get_all(
             filters_without_joins=filters_without_joins,

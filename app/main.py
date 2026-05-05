@@ -23,11 +23,11 @@ from app.core.handlers.exceptions import (
 )
 from app.core.routes.root import root_api_router
 from app.core.utils.constants import ApplicationConstants
+from app.forms.routes.api.v1.form_response_routes import form_response_router
+from app.forms.routes.api.v1.form_routes import form_router
 from app.locations.routes.api.v1.district_routes import district_router
 from app.locations.routes.api.v1.facility_routes import facility_router
 from app.locations.routes.api.v1.region_routes import region_router
-from app.forms.routes.api.v1.form_response_routes import form_response_router
-from app.forms.routes.api.v1.form_routes import form_router
 from app.users.routes.api.v1.user_facility_association_routes import user_facility_association_router
 from app.users.routes.api.v1.user_profile_routes import user_profile_router
 from app.users.routes.api.v1.user_routes import user_router
