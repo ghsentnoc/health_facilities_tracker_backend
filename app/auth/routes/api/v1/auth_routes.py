@@ -1,7 +1,6 @@
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Body, Depends, Header, Path, Request, status
-from fastapi.security import OAuth2PasswordRequestForm
 
 from app.auth.dependencies.auth_dependency import get_current_user, validate_api_key
 from app.auth.dependencies.auth_service_dependency import create_auth_service
@@ -15,6 +14,7 @@ from app.auth.docs.auth_docs import (
 )
 from app.auth.models import Application
 from app.auth.schemas.request.auth import (
+    AuthenticationForm,
     ChangePasswordSchema,
     EmailSchema,
     PasswordResetSchema,
@@ -216,7 +216,7 @@ def reset_password(
 def authenticate_user(
     request: Request,
     auth_service: Annotated[AuthService, Depends(create_auth_service)],
-    user_credentials: Annotated[OAuth2PasswordRequestForm, Depends(OAuth2PasswordRequestForm)],
+    user_credentials: Annotated[AuthenticationForm, Depends(AuthenticationForm)],
     application: Annotated[Application, Depends(validate_api_key)],
     device_id: Annotated[str, Header(..., description="The device ID making the request.")],
     client_type: Annotated[
@@ -550,6 +550,10 @@ async def logout(
     auth_service: Annotated[AuthService, Depends(create_auth_service)],
     current_user: Annotated[User, Depends(get_current_user)],
     device_id: Annotated[str, Header(..., description="The device ID making the request.")],
+    client_type: Annotated[
+        Literal["web", "mobile", "desktop", "api", "cli"],
+        Header(..., description="The client type making the request."),
+    ],
 ) -> ResponseSchema:
     """Logout a user from the system.
 
@@ -558,11 +562,12 @@ async def logout(
         auth_service (AuthService): The auth service to use.
         current_user (User): The current user.
         device_id (str): The device ID making the request.
+        client_type (Literal): The client type making the request.
 
     Returns:
         ResponseSchema: The response data
     """
-    _ = auth_service.logout(current_user=current_user, device_id=device_id)
+    _ = auth_service.logout(current_user=current_user, device_id=device_id, client_type=client_type)
 
     response_data = ResponseSchema(
         status=HTTPResponseStatus.SUCCESS.value,

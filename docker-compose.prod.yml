@@ -16,6 +16,21 @@ services:
     volumes:
       - health-facilities-tracker-redis-prod-data:/data
 
+  health-facilities-tracker-rabbitmq:
+    container_name: health-facilities-tracker-rabbitmq
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - ${RABBITMQ_PORT:-5672}:5672
+      - ${RABBITMQ_MANAGEMENT_PORT:-15672}:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+    volumes:
+      - health-facilities-tracker-rabbitmq-data:/var/lib/rabbitmq
+
 volumes:
   health-facilities-tracker-db-prod-data:
   health-facilities-tracker-redis-prod-data:
+  health-facilities-tracker-rabbitmq-data:

@@ -37,17 +37,24 @@ class AuthSessionService(BaseService[AuthSession]):
         """
         raise NotImplementedError
 
-    def get_session_by_device_id_user_id(self, *, device_id: str, user_id: str) -> Optional[AuthSession]:
+    def get_session_by_device_id_user_id(
+        self, *, device_id: str, user_id: str, client_type: str
+    ) -> Optional[AuthSession]:
         """Get an active auth session by device ID.
 
         Args:
             device_id (str): The device ID to search for.
             user_id (str): The user ID to search for.
+            client_type (str): The client type to search for.
 
         Returns:
             Optional[AuthSession]: The active auth session if found, else None.
         """
-        response = self.auth_session_repository.get_session_by_device_id_user_id(device_id=device_id, user_id=user_id)
+        response = self.auth_session_repository.get_session_by_device_id_user_id(
+            device_id=device_id,
+            user_id=user_id,
+            client_type=client_type,
+        )
 
         if response is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Auth session not found")

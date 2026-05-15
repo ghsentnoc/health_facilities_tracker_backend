@@ -38,6 +38,31 @@ services:
       "--loglevel", "warning"
     ]
 
+  health-facilities-tracker-rabbitmq:
+    container_name: health-facilities-tracker-rabbitmq
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file:
+      - .env
+    networks:
+      - health-facilities-tracker-network
+
+  health-facilities-tracker-rabbitmq-worker:
+    container_name: health-facilities-tracker-rabbitmq-woker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - health-facilities-tracker-rabbitmq
+    env_file:
+      - .env
+    networks:
+      - health-facilities-tracker-network
+    command: ["python", "-m", "app.core.workers.notification_worker"]
+
 networks:
   health-facilities-tracker-network:
     driver: bridge

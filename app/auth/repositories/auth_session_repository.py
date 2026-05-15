@@ -68,12 +68,15 @@ class AuthSessionRepository(BaseReadRepository[AuthSession], BaseWriteRepository
         """
         raise NotImplementedError
 
-    def get_session_by_device_id_user_id(self, *, device_id: str, user_id: str) -> Optional[AuthSession]:
+    def get_session_by_device_id_user_id(
+        self, *, device_id: str, user_id: str, client_type: str
+    ) -> Optional[AuthSession]:
         """Get an active auth session by device ID.
 
         Args:
             device_id (str): The device ID to search for.
             user_id (str): The user ID to search for.
+            client_type (str): The client type to search for.
 
         Returns:
             Optional[AuthSession]: The active auth session if found, else None.
@@ -84,6 +87,7 @@ class AuthSessionRepository(BaseReadRepository[AuthSession], BaseWriteRepository
                 and_(
                     AuthSession.device_id == device_id,  # type: ignore
                     AuthSession.user_id == user_id,  # type: ignore
+                    AuthSession.client_type == client_type,  # type: ignore
                 ),
                 AuthSession.is_deleted.is_(False),
             )

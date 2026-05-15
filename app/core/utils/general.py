@@ -15,8 +15,9 @@ from app.core.custom_exceptions import (
     InvalidSortModeError,
 )
 from app.core.schemas.query_params_schemas import AllowedFilterSchema, AllowedSortSchema, FilterSchema, PaginationSchema
-from app.core.utils.constants import MODEL_MAP, PaginationConstants
+from app.core.utils.constants import PaginationConstants
 from app.core.utils.messages import ErrorMessages
+from app.core.utils.model_map import MODEL_MAP
 from app.database.base import Base
 
 

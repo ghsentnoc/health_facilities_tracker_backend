@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.auth.config.auth_config import auth_config
 from app.auth.dependencies.api_keys_dependency import create_api_key_service
+from app.auth.dependencies.auth_session_service_dependency import create_auth_session_service
 from app.auth.dependencies.role_service_dependency import create_role_service
 from app.auth.models import APIKey, Application
 from app.auth.services.token_service import TokenService
@@ -44,6 +45,7 @@ def get_current_user(
     """
     user_service = create_user_service(db_session=db_session)
     role_service = create_role_service(db_session=db_session)
+    auth_session_service = create_auth_session_service(db_session=db_session)
     token_service = TokenService(
         secret=auth_config.JWT_SECRET_KEY,
         algorithm=auth_config.JWT_ALGORITHM,
@@ -78,11 +80,60 @@ def get_current_user(
     # get the user
     user = user_service.get_by_id(entity_id=payload.get("sub"))
 
+    if not user.is_verified:  # type: ignore
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=ErrorMessages.NOT_VERIFIED.value,
+        )
+
+    # check if user is approved
+    if not user.is_approved:  # type: ignore
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=ErrorMessages.entity_not_approved(object_type=User, value=str(user.email)),
+        )
+
+    # check if user is suspended
+    if user.is_suspended:  # type: ignore
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=ErrorMessages.ACCOUNT_SUSPENDED.value)
+
     # get the user active role
     if payload.get("active_role"):
         role = role_service.get_by_field(field_name="name", value=payload.get("active_role"), operator="eq")
 
         user.active_role = role  # type: ignore
+
+    session_id = payload.get("session_id")
+    session_token_version = payload.get("session_token_version")
+    if not session_id or session_token_version is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    try:
+        auth_session = auth_session_service.get_by_id(entity_id=session_id)
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from e
+
+    if auth_session.user_id != user.id or auth_session.is_deleted:  # type: ignore
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if str(auth_session.token_version) != str(session_token_version):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     # check if the token version is valid
     if user.token_version != payload["token_version"]:

@@ -5,7 +5,7 @@ from app.auth.dependencies.role_service_dependency import create_role_service
 from app.auth.services.auth_service import AuthService
 from app.auth.services.token_service import TokenService
 from app.auth.utils.hash_password import PasswordHashManager
-from app.core.services.mail_service import MailServiceBuilder
+from app.core.services.notification_publisher_service import NotificationPublisherService
 from app.users.dependencies.user_service_dependency import create_user_service
 from app.users.repositories.user_repository import UserRepository
 
@@ -26,10 +26,10 @@ class AuthServiceFactory:
         role_service = create_role_service(db_session=user_repository.db_session)
         user_service = create_user_service(db_session=user_repository.db_session)
         password_hash_manager = PasswordHashManager()
-        mail_service = MailServiceBuilder()
         token_service = TokenService(secret=auth_config.JWT_SECRET_KEY, algorithm=auth_config.JWT_ALGORITHM)
         refresh_token_service = create_refresh_token_service(db_session=user_repository.db_session)
         auth_session_service = create_auth_session_service(db_session=user_repository.db_session)
+        notification_publisher = NotificationPublisherService()
 
         return AuthService(
             user_repository=user_repository,
@@ -37,7 +37,7 @@ class AuthServiceFactory:
             role_service=role_service,
             refresh_token_service=refresh_token_service,
             password_hash_manager=password_hash_manager,
-            mail_service=mail_service,
             token_service=token_service,
             auth_session_service=auth_session_service,
+            notification_publisher=notification_publisher,
         )

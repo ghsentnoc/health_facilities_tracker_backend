@@ -7,6 +7,12 @@ T = TypeVar("T")
 class ErrorMessages(Enum):
     """Constants for error messages."""
 
+    CONNECTION_NOT_INITIALIZED = "RabbitMQ connection has not been initialized. Please call the connect method first."
+    CHANNEL_NOT_INITIALIZED = "RabbitMQ channel has not been initialized. Please call the connect method first."
+    CANNOT_SET_CHANNEL = "Cannot set RabbitMQ channel. The channel is managed internally and cannot be set manually."
+    CANNOT_SET_CONNECTION = (
+        "Cannot set RabbitMQ connection. The connection is managed internally and cannot be set manually."
+    )
     FACILITY_REPRESENTATIVE_LIMIT_EXCEEDED = "A facility can only have 4 representatives."
     INVALID_OAUTH_STATE = "Invalid OAuth state parameter."
     INVALID_URL = "The URL provided is not valid."

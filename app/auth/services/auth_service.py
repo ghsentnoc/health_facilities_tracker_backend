@@ -1,10 +1,9 @@
+import asyncio
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Any, Coroutine, Literal, Optional
+from typing import Any, Literal, Optional
 
 from fastapi import HTTPException, Request, status
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi_mail.errors import ConnectionErrors
 
 from app.auth.config.auth_config import auth_config
 from app.auth.custom_exceptions import AuthHTTPException
@@ -14,6 +13,7 @@ from app.auth.schemas.request.auth import (
     AccountSuspendedResponseSchema,
     AccountVerificationResponseSchema,
     AlreadyVerifiedOrPasswordSetDataSchema,
+    AuthenticationForm,
     AuthenticationTokenSchema,
     ChangePasswordSchema,
     EmailSchema,
@@ -40,8 +40,9 @@ from app.core.custom_exceptions import (
     FailedToSaveObjectException,
     InvalidTokenError,
 )
+from app.core.schemas.notification_schemas import EmailNotificationMessageSchema
 from app.core.services.base_service import BaseService
-from app.core.services.mail_service import MailServiceBuilder
+from app.core.services.notification_publisher_service import NotificationPublisherService
 from app.core.utils.constants import ApplicationConstants
 from app.core.utils.messages import ErrorMessages, SuccessMessages
 from app.users.models import User
@@ -64,6 +65,7 @@ class AuthService(BaseService[User]):
             auth_session = self.auth_session_service.get_session_by_device_id_user_id(
                 device_id=device_id,
                 user_id=user_id,
+                client_type=client_type,
             )
         except HTTPException as e:
             if e.status_code == status.HTTP_404_NOT_FOUND:
@@ -104,6 +106,25 @@ class AuthService(BaseService[User]):
             extra_info={"first_time_login": getattr(user, "first_time_login", False)},
         )
 
+    def _get_user_for_authentication(self, *, user_credentials: AuthenticationForm) -> User:
+        """Look up a user by the supplied authentication identifier."""
+        identifier_value = str(user_credentials.username).strip()
+        if user_credentials.user_identifier == "email":
+            identifier_value = identifier_value.lower()
+
+        user = self.user_repository.get_by_auth_identifier(
+            identifier_type=user_credentials.user_identifier,
+            value=identifier_value,
+        )
+
+        if user is None or user.is_deleted:  # type: ignore
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorMessages.INVALID_CREDENTIALS.value,
+            )
+
+        return user
+
     def __init__(
         self,
         *,
@@ -112,9 +133,9 @@ class AuthService(BaseService[User]):
         role_service: BaseService[Role],
         refresh_token_service: Any,
         password_hash_manager: PasswordHashManager,
-        mail_service: MailServiceBuilder,
         token_service: TokenService,
         auth_session_service: AuthSessionService,
+        notification_publisher: NotificationPublisherService,
     ) -> None:
         """Initializer for 'user' service.
 
@@ -126,19 +147,19 @@ class AuthService(BaseService[User]):
             role_service (BaseService[Role]): The role service.
             refresh_token_service (BaseService[RefreshToken]): The refresh token service.
             password_hash_manager (PasswordHashManager): The manager for hashing and verifying passwords.
-            mail_service (MailServiceBuilder): The mailing service.
             token_service (TokenService): The token service.
             google_oauth_service (GoogleOAuthService): The Google OAuth service.
             auth_session_service (AuthSessionService): The auth session service.
+            notification_publisher (NotificationPublisherService): The notification publisher service.
         """
         self.user_repository = user_repository
         self.user_service = user_service
         self.role_service = role_service
         self.refresh_token_service = refresh_token_service
         self.password_hash_manager = password_hash_manager
-        self.mail_service = mail_service
         self.token_service = token_service
         self.auth_session_service = auth_session_service
+        self.notification_publisher = notification_publisher
         super().__init__(main_repository=user_repository)
 
     # --------------------------- Helper methods (DRY) ---------------------------
@@ -153,6 +174,13 @@ class AuthService(BaseService[User]):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 data=self._already_verified_schema(user=user),  # type: ignore
                 message=ErrorMessages.NOT_VERIFIED.value,
+            )
+
+        # check if user is approved
+        if not user.is_approved:  # type: ignore
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorMessages.entity_not_approved(object_type=User, value=str(user.email)),
             )
 
         # check if user is suspended
@@ -284,13 +312,6 @@ class AuthService(BaseService[User]):
         )
 
         return access_token, refresh_token, refresh_token_payload.get("token_id")  # type: ignore
-
-    async def _safe_send_mail(self) -> None:
-        """Send mail using the configured mail_service and retry once on connection errors."""
-        try:
-            await self.mail_service.send_mail()
-        except ConnectionErrors:
-            await self.mail_service.send_mail()
 
     @staticmethod
     def _already_verified_schema(*, user: User) -> dict:
@@ -462,15 +483,14 @@ class AuthService(BaseService[User]):
             verification_url=verification_link,
         )
 
-        # Send the email using mail helper
-        (
-            self.mail_service.subject(subject="Password Reset Request")
-            .template(template_name="reset_password.html")
-            .body(body=mail_body.model_dump())
-            .recipients(recipients=[user.email])  # type: ignore
+        message = EmailNotificationMessageSchema(
+            notification_type="password_reset",
+            subject="Password Reset Request",
+            recipients=[str(user.email)],  # type: ignore
+            template_name="reset_password.html",
+            body=mail_body.model_dump(),
         )
-
-        await self._safe_send_mail()
+        await asyncio.to_thread(self.notification_publisher.publish_email_notification, message=message)
 
         return SuccessMessages.RESET_PASSWORD_EMAIL_SENT.value
 
@@ -539,7 +559,7 @@ class AuthService(BaseService[User]):
     def authenticate_user(
         self,
         *,
-        user_credentials: OAuth2PasswordRequestForm,
+        user_credentials: AuthenticationForm,
         application: Application,
         device_id: str,
         client_type: Literal["web", "mobile", "api", "desktop", "cli"],
@@ -555,8 +575,7 @@ class AuthService(BaseService[User]):
         Returns:
             AuthenticationTokenSchema: The tokens after authenticating user.
         """
-        # get the user
-        user = self._get_user_by_field_or_404(field_name="email", value=str(user_credentials.username).strip().lower())
+        user = self._get_user_for_authentication(user_credentials=user_credentials)
 
         # check if user is valid for login
         self._user_valid_for_login(user=user)  # type: ignore
@@ -579,12 +598,12 @@ class AuthService(BaseService[User]):
             client_type=client_type,
         )
 
+        if user.last_login is not None:  # type: ignore
+            user.first_time_login = False  # type: ignore
+
         # update user is_logged and token_version
         user.is_logged = True  # type: ignore
         user.last_login = datetime.now(tz=timezone.utc)  # type: ignore
-
-        if user.token_version > 1:  # type: ignore
-            user.first_time_login = False  # type: ignore
 
         return self._issue_tokens_and_refresh(
             user=user,  # type: ignore
@@ -626,6 +645,19 @@ class AuthService(BaseService[User]):
 
         user = self.user_service.get_by_id(entity_id=payload["sub"])
 
+        auth_session = self.auth_session_service.get_by_id(entity_id=payload["session_id"])
+        if (
+            str(auth_session.user_id) != str(user.id)
+            or str(auth_session.device_id) != device_id
+            or str(auth_session.client_type) != client_type
+            or bool(auth_session.is_deleted)
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorMessages.INVALID_TOKEN.value,
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
         # retrieve token from refresh tokens
         refresh_token_obj = self.refresh_token_service.get_by_field(
             field_name="token_id", value=payload.get("token_id"), operator="eq"
@@ -648,12 +680,15 @@ class AuthService(BaseService[User]):
             reason=RefreshTokenRevocationReasons.TOKEN_ROTATION.value,
         )
 
-    def logout(self, *, current_user: User, device_id: str) -> LoggedOutResponseSchema:
+    def logout(
+        self, *, current_user: User, device_id: str, client_type: Literal["web", "mobile", "api", "desktop", "cli"]
+    ) -> LoggedOutResponseSchema:
         """Log a user out of the system
 
         Args:
             current_user (User): The current user logged in
             device_id (str): The device ID of the user.
+            client_type (str): The client type of the user.
 
         Returns:
             dict: The logout response
@@ -663,7 +698,9 @@ class AuthService(BaseService[User]):
 
         # get auth session
         auth_session = self.auth_session_service.get_session_by_device_id_user_id(
-            device_id=device_id, user_id=str(current_user.id)
+            device_id=device_id,
+            user_id=str(current_user.id),
+            client_type=client_type,
         )
 
         # invalidate auth session
@@ -887,13 +924,13 @@ class AuthService(BaseService[User]):
         for role_id in role_ids:
             _ = self.role_service.get_by_id(entity_id=role_id)
 
-    def _send_verification_email(
+    async def _send_verification_email(
         self,
         *,
         user: User,
         app_platform: Optional[str] = None,
         app_name: Optional[str] = None,
-    ) -> Coroutine[Any, Any, None]:
+    ) -> None:
         """Generate token, build email, and send verification message.
 
         Args:
@@ -927,14 +964,14 @@ class AuthService(BaseService[User]):
             verification_url=verification_link,
         ).model_dump()
 
-        (
-            self.mail_service.subject(subject="Account Creation")
-            .recipients(recipients=[user.email])  # type: ignore
-            .template(template_name="account_creation.html")
-            .body(body=body)
+        message = EmailNotificationMessageSchema(
+            notification_type="account_verification",
+            subject="Account Creation",
+            recipients=[str(user.email)],
+            template_name="account_creation.html",
+            body=body,
         )
-
-        return self._safe_send_mail()
+        await asyncio.to_thread(self.notification_publisher.publish_email_notification, message=message)
 
     @staticmethod
     def _get_current_user_active_role(*, user: User, application: Application) -> str | None:

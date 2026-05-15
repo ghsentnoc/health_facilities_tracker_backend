@@ -1,8 +1,8 @@
+import asyncio
 from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import HTTPException, status
-from fastapi_mail.errors import ConnectionErrors
 
 from app.auth.config.auth_config import auth_config
 from app.auth.models import Role
@@ -12,8 +12,9 @@ from app.auth.utils.constants import RoleConstants, TokenTypeConstants
 from app.auth.utils.hash_password import PasswordHashManager
 from app.core.config.project_config import project_config
 from app.core.custom_exceptions import FacilityNotApprovedError
+from app.core.schemas.notification_schemas import EmailNotificationMessageSchema
 from app.core.services.base_service import BaseService
-from app.core.services.mail_service import MailServiceBuilder
+from app.core.services.notification_publisher_service import NotificationPublisherService
 from app.core.utils.constants import ApplicationConstants
 from app.core.utils.messages import ErrorMessages
 from app.locations.models import Facility
@@ -43,8 +44,8 @@ class UserService(BaseService[User]):
         facility_service: BaseService[Facility],
         role_service: BaseService[Role],
         password_hash_manager: PasswordHashManager,
-        mail_service: MailServiceBuilder,
         token_service: TokenService,
+        notification_publisher: NotificationPublisherService,
     ) -> None:
         """Initializer for 'user' service.
 
@@ -56,8 +57,8 @@ class UserService(BaseService[User]):
             facility_service (BaseService[Facility]): The facility service.
             role_service (BaseService[Role]): The role service.
             password_hash_manager (PasswordHashManager): The password hash manager.
-            mail_service (MailServiceBuilder): The mail service builder.
             token_service (TokenService): The token service.
+            notification_publisher (NotificationPublisherService): The notification publisher service.
         """
         self.user_repository = user_repository
         self.user_profile_service = user_profile_service
@@ -65,8 +66,8 @@ class UserService(BaseService[User]):
         self.facility_service = facility_service
         self.role_service = role_service
         self.password_hash_manager = password_hash_manager
-        self.mail_service = mail_service
         self.token_service = token_service
+        self.notification_publisher = notification_publisher
         super().__init__(main_repository=user_repository)
 
     def get_all(
@@ -228,19 +229,14 @@ class UserService(BaseService[User]):
             verification_url=verification_link,
         ).model_dump()
 
-        # build mail service
-        (
-            self.mail_service.subject(subject="Account Creation")
-            .recipients(recipients=[user.email])  # type: ignore
-            .template(template_name="account_creation.html")
-            .body(body=body)
+        message = EmailNotificationMessageSchema(
+            notification_type="account_verification",
+            subject="Account Creation",
+            recipients=[str(user.email)],
+            template_name="account_creation.html",
+            body=body,
         )
-
-        # send the mail
-        try:
-            await self.mail_service.send_mail()
-        except ConnectionErrors:
-            await self.mail_service.send_mail()
+        await asyncio.to_thread(self.notification_publisher.publish_email_notification, message=message)
 
     def _associate_user_to_facility(self, *, user_id: str, facility_id: str) -> None:
         """Associate a user to a facility.

@@ -72,3 +72,7 @@ class FailedToDeleteDataFromRedisError(Exception):
 
 class FacilityNotApprovedError(Exception):
     """Exception for when a facility is not approved."""
+
+
+class RabbitMQServiceError(Exception):
+    """Exception for RabbitMQ service errors."""

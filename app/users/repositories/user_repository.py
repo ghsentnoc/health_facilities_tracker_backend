@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type, Union
+from typing import Any, Literal, Optional, Type, Union
 
 from sqlalchemy.orm import Session, joinedload
 
@@ -107,3 +107,15 @@ class UserRepository(BaseReadRepository[User], BaseWriteRepository[User]):
     def update(self, *, entity: User, update_data: dict) -> User:
         """Update a user."""
         raise NotImplementedError
+
+    def get_by_auth_identifier(self, *, identifier_type: Literal["email", "phone_number"], value: str) -> User | None:
+        """Get a user by the credential used during authentication."""
+        query = self.db_session.query(User)
+        query = query.options(joinedload(User.profile), joinedload(User.roles), joinedload(User.user_facility))
+
+        if identifier_type == "phone_number":
+            query = query.join(UserProfile).filter(UserProfile.phone_number == value)
+        else:
+            query = query.filter(User.email == value)
+
+        return query.first()
