@@ -319,7 +319,6 @@ class AuthService(BaseService[User]):
         return AlreadyVerifiedOrPasswordSetDataSchema(
             email=user.email,  # type: ignore
             is_verified=bool(user.is_verified),
-            password_set=bool(user.password_set),  # type: ignore
         ).model_dump()
 
     # --------------------------- End helpers ---------------------------
@@ -369,7 +368,6 @@ class AuthService(BaseService[User]):
                 data=AlreadyVerifiedOrPasswordSetDataSchema(
                     email=user_to_verify.email,  # type: ignore
                     is_verified=bool(user_to_verify.is_verified),
-                    password_set=bool(user_to_verify.password_set),
                 ).model_dump(),
                 message=ErrorMessages.ALREADY_VERIFIED.value,
             )
@@ -749,10 +747,6 @@ class AuthService(BaseService[User]):
         # check if user is verified
         if not current_active_user.is_verified:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessages.NOT_VERIFIED.value)
-
-        # check if user password is set
-        if not current_active_user.password_set:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessages.NO_PASSWORD.value)
 
         # verify user's current password
         if not self.password_hash_manager.verify_password(
