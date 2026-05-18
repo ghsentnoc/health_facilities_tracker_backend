@@ -204,7 +204,7 @@ class AlreadyVerifiedOrPasswordSetDataSchema(EmailSchema):
     """Schema for when a user is already verified."""
 
     is_verified: bool
-    password_set: bool
+    # password_set: bool
 
 
 class CreatePasswordSchema(BaseModel):
